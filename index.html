@@ -106,11 +106,11 @@
   .btn-primary:hover { background: var(--rust); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(139,69,19,0.3); }
 
   /* QUIZ */
-  #quiz-screen { padding: 80px 24px 100px; justify-content: flex-start; }
-  .progress-container { width: 100%; max-width: 700px; margin-bottom: 48px; }
+  #quiz-screen { padding: 48px 20px 60px; justify-content: flex-start; }
+  .progress-container { width: 100%; max-width: 700px; margin-bottom: 28px; }
   .progress-meta { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
   .progress-label { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.3em; color: var(--gold); }
-  .progress-count { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--mist); }
+  .progress-count { font-family: 'Cormorant Garamond', serif; font-size: 26px; color: var(--mist); letter-spacing: 0.05em; }
   .progress-count span { color: var(--deep); font-weight: 600; }
   .progress-bar-track { height: 2px; background: rgba(201,168,76,0.2); position: relative; }
   .progress-bar-fill {
@@ -123,9 +123,10 @@
   }
 
   .question-wrapper { width: 100%; max-width: 700px; position: relative; overflow: hidden; }
-  .question-card {
-    background: var(--cream); border: 1px solid rgba(201,168,76,0.25); padding: 52px 48px 44px;
-    position: relative; box-shadow: 0 4px 40px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.8);
+.question-card {
+    background: var(--cream); border: 1px solid rgba(201,168,76,0.25); padding: 36px 32px 32px;
+    position: relative; box-shadow: 0 8px 48px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.9);
+    border-radius: 4px;
   }
   .question-card::before {
     content: ''; position: absolute; top: 0; left: 0; right: 0;
@@ -149,22 +150,22 @@
     overflow: hidden;
   }
 
-  .likert-cell {
+ .likert-cell {
     flex: 1; cursor: pointer; position: relative;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 14px 6px 12px;
+    padding: 16px 4px 14px;
     background: transparent;
     border: none;
     border-right: 1px solid rgba(201,168,76,0.18);
     transition: background 0.2s ease, transform 0.15s ease;
     outline: none;
-    gap: 7px;
+    gap: 8px;
   }
   .likert-cell:last-child { border-right: none; }
 
   /* dot indicator */
-  .likert-dot {
-    width: 14px; height: 14px; border-radius: 50%;
+ .likert-dot {
+    width: 18px; height: 18px; border-radius: 50%;
     border: 1.5px solid rgba(201,168,76,0.45);
     background: transparent;
     transition: all 0.2s ease;
@@ -219,7 +220,7 @@
   .question-card { padding: 28px 20px; }
   .question-text { font-size: 19px; }
   .likert-cell { padding: 14px 4px 12px; gap: 6px; }
-  .likert-dot { width: 13px; height: 13px; }
+  .likert-dot { width: 16px; height: 16px; }
   .likert-cell-label { font-size: 12px; }
   .dim-row { grid-template-columns: 44px 1fr 44px; }
   .result-section { padding: 24px 20px; }
@@ -237,7 +238,7 @@
   .character-svg-wrap { width: 160px; height: 210px; }
 }
   /* NAV */
-  .nav-buttons { display: flex; gap: 16px; margin-top: 32px; justify-content: space-between; width: 100%; max-width: 700px; }
+ .nav-buttons { display: flex; gap: 16px; margin-top: 20px; justify-content: space-between; width: 100%; max-width: 700px; }
   .btn-nav {
     font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.2em;
     text-transform: uppercase; padding: 14px 32px; border: 1px solid rgba(201,168,76,0.3);
@@ -474,7 +475,7 @@
   <p class="intro-text">
     卡尔·荣格提出，人类的心理功能可分为四对相对的维度——内向与外向、直觉与感觉、思维与情感、判断与感知。
     <br><br>
-    本测试包含 <strong>60</strong> 道精心设计的题目，采用<strong>五级量表</strong>（从"非常符合"到"完全不符合"），
+    本测试包含 <strong>60</strong> 道精心设计的题目，采用<strong>五级量表</strong>（从"非常符合"到"完全不符"），
     通过你对真实情境的直觉反应，揭示你的认知类型与心理原型。
     <br><br>
     <em>请依据第一直觉作答，无需过度思量。</em>
@@ -1406,7 +1407,7 @@ function fillCard(q, index) {
   document.getElementById('q-text').textContent = q.text;
 
   const saved = answers[index];
-  const labels = ['完全\n不符合', '不太\n符合', '中立', '比较\n符合', '非常\n符合'];
+  const labels = ['完全不符', '不太符合', '中立', '比较符合', '非常符合'];
 
   document.getElementById('likert-container').innerHTML = `
     <div class="likert-container">
