@@ -216,12 +216,27 @@
     color: var(--mist); text-transform: uppercase;
   }
 
-  @media (max-width: 600px) {
-    .likert-cell { padding: 11px 3px 10px; gap: 5px; }
-    .likert-dot { width: 11px; height: 11px; }
-    .likert-cell-label { font-size: 10px; }
-  }
-
+@media (max-width: 768px) {
+  .question-card { padding: 28px 20px; }
+  .question-text { font-size: 17px; }
+  .likert-cell { padding: 14px 4px 12px; gap: 6px; }
+  .likert-dot { width: 13px; height: 13px; }
+  .likert-cell-label { font-size: 12px; }
+  .dim-row { grid-template-columns: 44px 1fr 44px; }
+  .result-section { padding: 24px 20px; }
+  .dimension-bars { padding: 24px 20px; }
+  h1 { font-size: 36px; }
+  .subtitle { font-size: 16px; }
+  .intro-text { font-size: 16px; }
+  .result-type-badge { font-size: 72px; }
+  .result-archetype { font-size: 24px; }
+  .section-body { font-size: 16px; }
+  .progress-count { font-size: 18px; }
+  .btn-primary { padding: 20px 52px; font-size: 14px; }
+  .character-showcase { gap: 24px; }
+  .character-img-wrap img,
+  .character-svg-wrap { width: 160px; height: 210px; }
+}
   /* NAV */
   .nav-buttons { display: flex; gap: 16px; margin-top: 32px; justify-content: space-between; width: 100%; max-width: 700px; }
   .btn-nav {
@@ -314,10 +329,15 @@
     width: 200px; flex-shrink: 0;
     display: flex; flex-direction: column; align-items: center; gap: 12px;
   }
-  .character-img-wrap img {
-    width: 200px; height: 260px; object-fit: contain;
-    filter: drop-shadow(0 8px 24px rgba(139,69,19,0.18));
-  }
+.character-img-wrap img {
+  width: 200px; height: 260px; object-fit: contain;
+  filter: drop-shadow(0 8px 24px rgba(139,69,19,0.18));
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.character-img-wrap img.loaded {
+  opacity: 1;
+}
   .character-svg-wrap {
     width: 200px; height: 260px; position: relative;
     filter: drop-shadow(0 8px 24px rgba(139,69,19,0.15));
@@ -1315,7 +1335,8 @@ function getCharacterSVG(type) {
 let questions = [];
 let answers = {};
 let currentIndex = 0;
-let isNavigating = false; // BUG FIX: prevent double-navigation
+let isNavigating = false; 
+let pendingReturnToLast = false;// BUG FIX: prevent double-navigation
 
 function shuffleArray(arr) {
   const a = [...arr];
@@ -1386,7 +1407,7 @@ function fillCard(q, index) {
   document.getElementById('q-text').textContent = q.text;
 
   const saved = answers[index];
-  const labels = ['非常符合', '比较\n符合', '中立', '不太\n符合', '完全\n不符合'];
+  const labels = ['完全\n不符合', '不太\n符合', '中立', '比较\n符合', '非常符合'];
 
   document.getElementById('likert-container').innerHTML = `
     <div class="likert-container">
@@ -1400,8 +1421,8 @@ function fillCard(q, index) {
         `).join('')}
       </div>
       <div class="likert-endpoints">
-        <span class="likert-ep">← 完全符合</span>
-        <span class="likert-ep">完全不符 →</span>
+        <span class="likert-ep">← 完全不符</span>
+        <span class="likert-ep">完全符合 →</span>
       </div>
     </div>
   `;
@@ -1419,16 +1440,49 @@ function selectAnswer(index, value) {
   updateNavButtons();
 
   // BUG FIX: use isNavigating guard for auto-advance
-  if (index < questions.length - 1 && !isNavigating) {
-    isNavigating = true;
-    setTimeout(() => {
+if (!isNavigating) {
+  isNavigating = true;
+  setTimeout(() => {
+if (pendingReturnToLast) {
+  pendingReturnToLast = false;
+  const remaining = [];
+  for (let i = 0; i < questions.length; i++) {
+    if (answers[i] === undefined && i !== index) remaining.push(i);
+  }
+  if (remaining.length > 0) {
+    // 还有漏题，直接弹出继续补答
+    isNavigating = false;
+    showUnansweredAfterLast(remaining);
+    return;
+  } else {
+    // 全部答完，跳回最后一题
+    currentIndex = questions.length - 1;
+    renderQuestion(currentIndex, 'forward');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    isNavigating = false;
+    return;
+  }
+}
+    // 检查是否有未答题目（不含当前题和最后一题之后）
+    const unanswered = [];
+    for (let i = 0; i < questions.length; i++) {
+      if (answers[i] === undefined && i !== index) unanswered.push(i);
+    }
+    const isLast = index === questions.length - 1;
+
+    if (!isLast) {
       currentIndex = index + 1;
       renderQuestion(currentIndex, 'forward');
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 500);
-  } else {
-    isNavigating = false;
-  }
+    } else if (unanswered.length > 0) {
+      // 在最后一题答完后，提示空缺
+      showUnansweredAfterLast(unanswered);
+      isNavigating = false;
+    } else {
+      isNavigating = false;
+    }
+  }, 500);
+}
 }
 
 function navigate(dir) {
@@ -1444,7 +1498,6 @@ function navigate(dir) {
 function updateNavButtons() {
   document.getElementById('btn-prev').disabled = currentIndex === 0;
   const isLast = currentIndex === questions.length - 1;
-  document.getElementById('btn-next').style.display = isLast ? 'none' : 'flex';
   const submitBtn = document.getElementById('btn-submit');
   submitBtn.classList.toggle('visible', isLast);
 }
@@ -1460,6 +1513,25 @@ function jumpToQuestion(index) {
   currentIndex = index;
   renderQuestion(index, 'none');
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showUnansweredAfterLast(unanswered) {
+  const grid = document.getElementById('unanswered-grid');
+  document.getElementById('modal-subtitle').textContent = 
+    `还有 ${unanswered.length} 道题目尚未作答，点击题号可直接跳转：`;
+  grid.innerHTML = unanswered.map(i =>
+    `<button class="unanswered-btn" onclick="jumpToQuestionThenReturnLast(${i})">第 ${i+1} 题</button>`
+  ).join('');
+  document.getElementById('unanswered-modal').classList.add('open');
+}
+
+function jumpToQuestionThenReturnLast(index) {
+  closeModal();
+  isNavigating = false;
+  currentIndex = index;
+  renderQuestion(index, 'none');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  pendingReturnToLast = true; // 保持原有标记
 }
 
 function submitTest() {
@@ -1501,7 +1573,7 @@ function calculateAndShowResult() {
     const pole = q.pole; // E,I,S,N,T,F,J,P
 
     // Convert to -2..+2 where positive = "agree with statement"
-    const score = 3 - val; // 1→+2, 2→+1, 3→0, 4→-1, 5→-2
+    const score = val - 3; // 1→+2, 2→+1, 3→0, 4→-1, 5→-2
 
     // If pole is the first letter of the dimension, positive score → first letter
     const isFirst = (pole === firstPole[dim]);
@@ -1571,7 +1643,16 @@ function showResult(type, pcts) {
       </div>
     </div>
   `;
-
+setTimeout(() => {
+  const img = document.querySelector('.character-img-wrap img');
+  if (img) {
+    if (img.complete && img.naturalWidth > 0) {
+      img.classList.add('loaded');
+    } else {
+      img.onload = () => img.classList.add('loaded');
+    }
+  }
+}, 50);
   // ── DIMENSION BARS ─────────────────────────────────────────
   const dims = [
     { dim:'EI', left:'E', right:'I', pct: pcts['EI'] },
