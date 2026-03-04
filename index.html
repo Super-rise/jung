@@ -141,53 +141,85 @@
     font-weight: 300; line-height: 1.75; color: var(--deep); margin-bottom: 32px; letter-spacing: 0.03em;
   }
 
-  /* LIKERT SCALE */
+  /* LIKERT SCALE — horizontal card strip */
   .likert-container { width: 100%; }
-  .likert-poles {
-    display: flex; justify-content: space-between; margin-bottom: 10px;
-    font-family: 'Noto Serif SC', serif; font-size: 13px; color: #7a6a5a;
-  }
-  .likert-pole-left { text-align: left; max-width: 45%; line-height: 1.4; }
-  .likert-pole-right { text-align: right; max-width: 45%; line-height: 1.4; color: #7a6a5a; }
 
-  .likert-scale {
-    display: flex; gap: 8px; justify-content: center; padding: 16px 0; align-items: flex-end;
-  }
-  .likert-option {
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-    cursor: pointer; flex: 1;
-  }
-  .likert-btn {
-    width: 100%; aspect-ratio: 1; border: 1.5px solid rgba(201,168,76,0.3);
-    background: transparent; cursor: pointer;
-    transition: all 0.2s ease; position: relative; border-radius: 2px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .likert-option:nth-child(1) .likert-btn { width: 38px; height: 38px; }
-  .likert-option:nth-child(2) .likert-btn { width: 34px; height: 34px; }
-  .likert-option:nth-child(3) .likert-btn { width: 28px; height: 28px; border-color: rgba(155,144,128,0.3); }
-  .likert-option:nth-child(4) .likert-btn { width: 34px; height: 34px; }
-  .likert-option:nth-child(5) .likert-btn { width: 38px; height: 38px; }
-
-  .likert-btn:hover { border-color: var(--gold); background: rgba(201,168,76,0.08); }
-  .likert-btn.selected-1 { background: #8b4513; border-color: #8b4513; }
-  .likert-btn.selected-2 { background: #c9a84c; border-color: #c9a84c; }
-  .likert-btn.selected-3 { background: rgba(155,144,128,0.3); border-color: var(--mist); }
-  .likert-btn.selected-4 { background: #7a9b6e; border-color: #7a9b6e; }
-  .likert-btn.selected-5 { background: #4a7a5a; border-color: #4a7a5a; }
-
-  .likert-label {
-    font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.1em;
-    color: var(--mist); text-align: center; line-height: 1.3;
+  .likert-strip {
+    display: flex; gap: 0; width: 100%; margin: 8px 0 4px;
+    border: 1px solid rgba(201,168,76,0.25);
+    overflow: hidden;
   }
 
-  .likert-scale-labels {
-    display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px;
-    margin-top: 4px; text-align: center;
+  .likert-cell {
+    flex: 1; cursor: pointer; position: relative;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 14px 6px 12px;
+    background: transparent;
+    border: none;
+    border-right: 1px solid rgba(201,168,76,0.18);
+    transition: background 0.2s ease, transform 0.15s ease;
+    outline: none;
+    gap: 7px;
   }
-  .scale-label-item {
-    font-size: 10px; color: var(--mist); font-family: 'Cinzel', serif;
-    letter-spacing: 0.05em; line-height: 1.3;
+  .likert-cell:last-child { border-right: none; }
+
+  /* dot indicator */
+  .likert-dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 1.5px solid rgba(201,168,76,0.45);
+    background: transparent;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .likert-cell-label {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 11px; color: #8a7a6a;
+    text-align: center; line-height: 1.35;
+    letter-spacing: 0.01em;
+    transition: color 0.2s;
+  }
+
+  /* hover */
+  .likert-cell:hover { background: rgba(201,168,76,0.06); }
+  .likert-cell:hover .likert-dot { border-color: var(--gold); background: rgba(201,168,76,0.18); }
+  .likert-cell:hover .likert-cell-label { color: var(--deep); }
+
+  /* selected states — warm ink palette matching parchment */
+  .likert-cell.sel-1 { background: rgba(139,69,19,0.10); }
+  .likert-cell.sel-1 .likert-dot { background: #8b4513; border-color: #8b4513; box-shadow: 0 0 6px rgba(139,69,19,0.35); }
+  .likert-cell.sel-1 .likert-cell-label { color: #8b4513; font-weight: 600; }
+
+  .likert-cell.sel-2 { background: rgba(185,145,60,0.10); }
+  .likert-cell.sel-2 .likert-dot { background: #b99130; border-color: #b99130; box-shadow: 0 0 6px rgba(185,145,60,0.35); }
+  .likert-cell.sel-2 .likert-cell-label { color: #8a6a20; font-weight: 600; }
+
+  .likert-cell.sel-3 { background: rgba(155,144,128,0.10); }
+  .likert-cell.sel-3 .likert-dot { background: #9b9080; border-color: #9b9080; box-shadow: 0 0 4px rgba(155,144,128,0.25); }
+  .likert-cell.sel-3 .likert-cell-label { color: #7a7068; font-weight: 600; }
+
+  .likert-cell.sel-4 { background: rgba(85,118,100,0.10); }
+  .likert-cell.sel-4 .likert-dot { background: #557664; border-color: #557664; box-shadow: 0 0 6px rgba(85,118,100,0.3); }
+  .likert-cell.sel-4 .likert-cell-label { color: #3d5e50; font-weight: 600; }
+
+  .likert-cell.sel-5 { background: rgba(52,90,70,0.10); }
+  .likert-cell.sel-5 .likert-dot { background: #345a46; border-color: #345a46; box-shadow: 0 0 6px rgba(52,90,70,0.3); }
+  .likert-cell.sel-5 .likert-cell-label { color: #345a46; font-weight: 600; }
+
+  /* endpoint labels under strip */
+  .likert-endpoints {
+    display: flex; justify-content: space-between;
+    margin-top: 6px; padding: 0 2px;
+  }
+  .likert-ep {
+    font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.15em;
+    color: var(--mist); text-transform: uppercase;
+  }
+
+  @media (max-width: 600px) {
+    .likert-cell { padding: 11px 3px 10px; gap: 5px; }
+    .likert-dot { width: 11px; height: 11px; }
+    .likert-cell-label { font-size: 10px; }
   }
 
   /* NAV */
@@ -268,14 +300,51 @@
 
   /* CHARACTER ILLUSTRATION */
   .character-showcase {
-    display: flex; align-items: center; justify-content: center;
+    display: flex; align-items: flex-start; justify-content: center;
     gap: 48px; margin-bottom: 48px; flex-wrap: wrap;
+  }
+  /* ── PNG IMAGE SLOT ──────────────────────────────────────────
+     To use a custom PNG image for a personality type, place
+     your image file in the same folder as this HTML file and
+     name it exactly:  INTJ.png  /  INFP.png  / etc.
+     The slot below will automatically display it if found.
+     If the file is missing, the SVG illustration shows instead.
+  ──────────────────────────────────────────────────────────── */
+  .character-img-wrap {
+    width: 200px; flex-shrink: 0;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  .character-img-wrap img {
+    width: 200px; height: 260px; object-fit: contain;
+    filter: drop-shadow(0 8px 24px rgba(139,69,19,0.18));
   }
   .character-svg-wrap {
     width: 200px; height: 260px; position: relative;
     filter: drop-shadow(0 8px 24px rgba(139,69,19,0.15));
   }
   .character-svg-wrap svg { width: 100%; height: 100%; }
+  .character-type-label {
+    font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.3em;
+    color: var(--mist); text-align: center;
+  }
+  .character-info { max-width: 300px; text-align: left; }
+  .population-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid rgba(201,168,76,0.3); padding: 8px 16px;
+    margin-bottom: 16px; background: rgba(201,168,76,0.04);
+  }
+  .population-num {
+    font-family: 'Cinzel', serif; font-size: 22px; color: var(--rust); font-weight: 600;
+  }
+  .population-text {
+    font-size: 12px; color: var(--mist); line-height: 1.4;
+  }
+  .celeb-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .celeb-chip {
+    font-size: 12px; color: var(--deep); padding: 5px 12px;
+    border: 1px solid rgba(201,168,76,0.25); background: rgba(201,168,76,0.06);
+    font-family: 'Noto Serif SC', serif; letter-spacing: 0.02em;
+  }
 
   .dimension-bars {
     background: var(--cream); border: 1px solid rgba(201,168,76,0.2);
@@ -525,177 +594,241 @@ const RESULTS = {
     archetype: '战略家·建筑师',
     tagline: 'THE ARCHITECT · STRATEGIC VISION',
     color: '#2c4a6e',
-    desc: '你拥有卓越的分析能力和独立精神，是那种能够在混沌中看见秩序的人。荣格称这种类型为「内倾直觉思维判断型」——你的主导认知功能是内倾直觉（Ni），以惊人的洞察力预见模式和趋势；辅助功能外倾思维（Te）则将这些洞见转化为精密的战略与行动。',
-    cognitive: '主导功能：内倾直觉（Ni）— 无意识整合信息，形成长远预见\n辅助功能：外倾思维（Te）— 系统化组织外部世界\n第三功能：内倾情感（Fi）— 内化的价值观，鲜少示人\n劣势功能：外倾感觉（Se）— 对当下细节有时忽略',
-    strengths: ['战略性长远思维', '独立自主', '意志坚定', '持续自我完善', '洞见深刻'],
-    careers: '科学研究、战略咨询、软件架构、学术研究、独立创业',
+    population: '约 2%',
+    populationNote: '全球人口中约2%，男性中略多',
+    celebrities: ['埃隆·马斯克', '史蒂芬·霍金', '尼采', '克里斯托弗·诺兰', '马克·扎克伯格', '希拉里·克林顿'],
+    desc: 'INTJ，荣格理论中的「内倾直觉思维判断型」，是十六型人格中最为稀有且最具战略眼光的类型之一。你的内心世界是一台永不停转的战略机器——你天生能够在纷繁复杂的信息中提炼出核心规律，并将其转化为可以执行的长远计划。\n\n你的主导认知功能是内倾直觉（Ni），它像一张隐形的雷达，无声地在潜意识中整合海量信息，最终以直觉的形式呈现出对未来的深刻预见。这种能力让你常常能比旁人早几步看到趋势的走向，甚至在别人还没意识到问题时，你就已经设计好了解决方案。辅助功能外倾思维（Te）则是你的执行引擎，它驱使你以系统化、客观化的方式将内在的洞见付诸现实，构建高效的结构和流程。\n\nINTJ有着极强的自我标准，你不仅要求自己不断精进，也会对周围的人和事抱有同样的高期待。你讨厌平庸、厌恶敷衍，任何缺乏逻辑或效率的事物都会令你感到不耐烦。你独立、自主，不需要外界认可来驱动自己前进，内在的使命感和对卓越的追求是你最强大的动力源泉。\n\n在人际关系上，你往往给人冷峻、距离感强的印象，但这并不意味着你缺乏情感——只是你的情感深藏于第三功能内倾情感（Fi）之中，鲜少轻易示人。对于真正值得信任的人，INTJ可以给予极深的忠诚与陪伴。',
+    cognitive: '主导功能：内倾直觉（Ni）— 潜意识整合信息，形成对未来的深刻预见，以「顿悟」的形式浮现\n辅助功能：外倾思维（Te）— 以客观、系统的方式组织外部世界，追求效率与结构\n第三功能：内倾情感（Fi）— 深层而内化的个人价值观，是行动的隐性罗盘\n劣势功能：外倾感觉（Se）— 对当下感官细节和即时享乐较为迟钝，压力下可能出现极端放纵',
+    strengths: ['战略性长远思维', '独立自主', '意志坚定', '持续自我完善', '洞见深刻', '高度自律', '系统性解决问题'],
+    weaknesses: '过于追求完美可能导致拖延或苛责他人；在情感表达上常显生硬，容易被误解为冷漠；面对批评时可能过于防御；有时会因为太过自信于自己的判断而忽略他人的有效视角。',
+    careers: '战略咨询师、软件架构师、学术研究员、神经科学家、投资分析师、首席执行官（CEO）、系统工程师、哲学家、军事战略家',
     compatible: ['ENFP', 'ENTP', 'INFJ', 'INTJ'],
-    growth: '尝试向他人敞开心扉，情感表达并非弱点，而是另一种智识。练习活在当下，欣赏过程而非只关注结果。',
+    growth: '你强大的头脑有时会成为一道屏障，将情感隔绝在外。试着主动练习表达脆弱——这不是软弱，而是连接人心的勇气。学会欣赏过程本身的价值，而不只是结果；世界的美，有时就藏在那些你习惯忽略的当下细节里。',
   },
   INTP: {
     archetype: '逻辑学家·思想家',
     tagline: 'THE LOGICIAN · PURE REASONING',
     color: '#3a5a4a',
-    desc: '你是天生的哲学家和问题解决者，拥有对真理孜孜不倦的追求。你的主导功能内倾思维（Ti）以精密的内部逻辑框架分析一切，追求对系统的深刻理解；外倾直觉（Ne）则让你同时看见无数个可能性和跨领域关联。',
-    cognitive: '主导功能：内倾思维（Ti）— 构建精密的内部逻辑体系\n辅助功能：外倾直觉（Ne）— 探索无限可能性与跨领域关联\n第三功能：内倾感觉（Si）— 参照过去的经验和模式\n劣势功能：外倾情感（Fe）— 处理人际情感时常感不适',
-    strengths: ['深度分析能力', '创造性思维', '客观公正', '思维开放', '理论建构'],
-    careers: '哲学、数学、编程、物理、经济学、系统分析',
+    population: '约 3%',
+    populationNote: '全球约3%，在学术界比例更高',
+    celebrities: ['阿尔伯特·爱因斯坦', '艾萨克·牛顿', '查尔斯·达尔文', '比尔·盖茨', '拉里·佩奇', '蒂姆·伯纳斯-李'],
+    desc: 'INTP，荣格理论中的「内倾思维直觉感知型」，是智识世界的孤独探险家。你的主导功能内倾思维（Ti）是一台精密的内部逻辑处理器，它驱使你不断追问：「这个逻辑真的自洽吗？这个系统的底层原理是什么？」你不满足于表面答案，你需要彻底理解事物的本质机制。\n\n辅助功能外倾直觉（Ne）为这台逻辑机器插上了创意的翅膀——你能在毫不相关的领域之间发现令人惊叹的关联，同时在脑中运行着十几个思想实验。INTP是天生的理论构建者，你的头脑如同一个无边界的沙盒，永远在搭建、拆解、再重建更精妙的模型。\n\n你对真理的追求近乎偏执，愿意为了找到正确答案而否定自己之前的所有结论——这种智识上的诚实是你最珍贵的品质。然而这也意味着你很难对不完美的方案感到满意，「完成」这件事对你来说往往比「开始」更难。\n\n在社交上，INTP常常显得心不在焉或者格格不入，并非因为不在乎，而是因为你的大部分注意力都驻留在内部那个更令人着迷的思维空间里。你对真正志同道合的人会展现出罕见的热情和深度。',
+    cognitive: '主导功能：内倾思维（Ti）— 构建精密的内部逻辑体系，追求对系统的完整理解\n辅助功能：外倾直觉（Ne）— 发现跨领域关联，产生源源不断的新奇想法\n第三功能：内倾感觉（Si）— 借助过去的经验和个人数据库辅助决策\n劣势功能：外倾情感（Fe）— 处理人际情感和社交规范时感到困难，压力下可能情绪失控',
+    strengths: ['深度分析能力', '创造性思维', '客观公正', '思维高度开放', '理论建构', '跨领域洞察', '智识诚实'],
+    weaknesses: '极难完成项目（完美主义+注意力发散）；对日常事务和情感需求感到疲惫；可能过于沉浸理论而脱离现实；有时给人冷漠或自以为是的印象；容易在社交场合中显得心不在焉。',
+    careers: '哲学家、数学家、理论物理学家、计算机科学家、经济学家、系统分析师、密码学家、认知科学研究员',
     compatible: ['ENTJ', 'ESTJ', 'INFJ', 'ENFJ'],
-    growth: '将你的理论付诸实践，完成比完美更重要。留意身边人的情感需求，主动练习表达温暖。',
+    growth: '你的思维是人类最珍贵的礼物之一，但让想法留在脑中永远只是潜力，唯有付诸行动才能成为影响。试着接受「足够好」而非「绝对完美」——完成一件80分的作品，远胜于永远停在99分的设想里。',
   },
   ENTJ: {
     archetype: '指挥官·统帅',
     tagline: 'THE COMMANDER · NATURAL LEADER',
     color: '#5a2c2c',
-    desc: '你天生具备领导气质，能够迅速把握局势并组织资源达成目标。主导功能外倾思维（Te）以高效系统的方式组织外部世界；内倾直觉（Ni）赋予你洞察长远趋势的战略眼光。你是执行力与远见的罕见结合。',
-    cognitive: '主导功能：外倾思维（Te）— 高效组织系统和人员以实现目标\n辅助功能：内倾直觉（Ni）— 洞察深层模式，预见未来\n第三功能：外倾感觉（Se）— 对当下机会的感知\n劣势功能：内倾情感（Fi）— 对自身内心深处的价值观把握较少',
-    strengths: ['天然领导力', '战略远见', '决断力', '高效执行', '激励他人'],
-    careers: '企业管理、法律、投资银行、政治、创业、军事指挥',
+    population: '约 3%',
+    populationNote: '全球约3%，在企业高管中比例偏高',
+    celebrities: ['史蒂夫·乔布斯', '拿破仑·波拿巴', '玛格丽特·撒切尔', '戈登·拉姆齐', '杰克·韦尔奇', '弗兰克·安德伍德'],
+    desc: 'ENTJ，「外倾直觉思维判断型」，是十六型人格中最具领导力气质的类型，也是人群中最罕见的组合之一。走进任何一个房间，ENTJ往往会在无意识中评估权力结构，并在短时间内找到最有效的影响路径。你不是为了被管理而生的，你是为了定义方向而存在的。\n\n你的主导功能外倾思维（Te）让你对低效、混乱和不作为有着近乎本能的厌恶。你会迅速将复杂问题分解为可执行的任务，并以惊人的效率组织人和资源。内倾直觉（Ni）作为辅助功能，赋予你洞穿表象看见长远趋势的战略眼光——你不只是在解决今天的问题，而是在设计明天的格局。\n\nENTJ通常充满自信，语言直接，对无能和借口零容忍。这使你成为极其高效的领导者，但也可能在无意间压倒他人，让团队成员感到难以企及。你对挑战的渴望是真实的——没有目标可以攻克的日子，对你来说比失败更令人难以忍受。\n\n你的劣势功能内倾情感（Fi）意味着你对自己内心深处的情绪需求并不总是敏锐，你可能会在高速前进中忽视自己和他人的情感消耗。',
+    cognitive: '主导功能：外倾思维（Te）— 高效组织系统、人员和资源以实现目标，厌恶一切形式的低效\n辅助功能：内倾直觉（Ni）— 洞察深层模式，形成对未来格局的战略预见\n第三功能：外倾感觉（Se）— 对当下机遇保持敏锐，善于把握时机\n劣势功能：内倾情感（Fi）— 对内心深层情绪和他人情感需求较为迟钝',
+    strengths: ['天然领导魅力', '战略远见', '高度决断力', '强大执行力', '激励他人', '危机处理', '目标导向'],
+    weaknesses: '容易让他人感到被压迫或无法达到标准；有时为了效率忽视情感代价；在面对个人情感时可能感到不适或回避；权力欲过强时可能走向独裁；对批评极为敏感，尽管很少表现出来。',
+    careers: '首席执行官、企业创始人、投资银行家、律师、政治家、军事指挥官、外科主任、风险投资人',
     compatible: ['INTP', 'INFP', 'ENTP', 'ENTJ'],
-    growth: '学会放慢脚步，倾听他人的情感。效率固然重要，但人心不是机器，关系需要温度。',
+    growth: '你已经学会了如何征服外部世界，现在最值得攻克的疆域是你自己的内心。试着在高速奔跑中停下来，问一问你身边的人：「你还好吗？」——不是为了解决问题，只是真诚地想要知道答案。',
   },
   ENTP: {
     archetype: '辩论家·创新者',
     tagline: 'THE DEBATER · INTELLECTUAL CHALLENGER',
     color: '#4a3a6a',
-    desc: '你热爱思想的碰撞，以挑战一切为乐，永远在寻找下一个令人兴奋的想法。主导功能外倾直觉（Ne）让你以惊人的速度发现新模式和可能性；内倾思维（Ti）则帮你构建严密的逻辑来检验这些想法。',
-    cognitive: '主导功能：外倾直觉（Ne）— 快速发现跨领域模式与可能性\n辅助功能：内倾思维（Ti）— 用精密逻辑检验和构建想法\n第三功能：外倾情感（Fe）— 感知社交氛围的能力\n劣势功能：内倾感觉（Si）— 对常规和细节执行常感厌倦',
-    strengths: ['快速思维', '创新能力', '辩论技巧', '适应力', '魅力与口才'],
-    careers: '创业、律师、创意策划、科技产品、教育、新闻评论',
+    population: '约 3%',
+    populationNote: '全球约3%，在创业者和律师中比例偏高',
+    celebrities: ['托马斯·爱迪生', '本杰明·富兰克林', '萨拉特·科马力', '理查德·费曼', '马克·吐温', '凯斯·里查兹'],
+    desc: 'ENTP，「外倾直觉思维感知型」，是十六型人格中最热爱智识游戏的类型。你不只是喜欢辩论——你对辩论本身有一种近乎美学的欣赏。无论观点是否是你真实立场，你都能找到它最有力的论据，并以此挑战任何你认为站不住脚的假设。\n\n你的主导功能外倾直觉（Ne）像一台永不停歇的雷达，持续扫描环境中的模式、矛盾和可能性。你的大脑常常同时处理十几条思路，并在它们之间建立令人惊喜的连接。内倾思维（Ti）作为辅助功能，为这些天马行空的想法提供逻辑骨架——你不只是喜欢新奇，你还需要新奇在逻辑上站得住脚。\n\nENTP是天生的颠覆者，你的存在本身就是对现状的挑战。你看到规则，首先想到的是它为什么存在以及它是否应该继续存在。这种特质让你在创新和变革中无可替代，但也可能让周围的人感到疲惫，因为你的辩驳欲望有时比你的建设欲望更强。\n\n你最大的弱点不是缺乏能力，而是注意力——在一个新想法诞生之前，你很难对旧想法保持持久的热情。',
+    cognitive: '主导功能：外倾直觉（Ne）— 以惊人速度发现跨领域模式，持续产生新的可能性\n辅助功能：内倾思维（Ti）— 用精密内部逻辑检验和构建想法，寻求理解的深度\n第三功能：外倾情感（Fe）— 感知社交氛围，具备天然的社交魅力\n劣势功能：内倾感觉（Si）— 对常规、细节执行和个人历史数据较为忽视',
+    strengths: ['极速创意思维', '跨领域创新', '辩论与说服力', '适应力极强', '口才与魅力', '挑战现状的勇气', '概念整合能力'],
+    weaknesses: '难以将想法坚持到落地；对重复性工作极度不耐烦；辩驳欲过强会让关系中的人感到被攻击；容易在新项目和旧承诺之间失衡；有时为了辩论而辩论，忽略了他人的情感。',
+    careers: '创业者、律师、产品策略师、科技作家、创意总监、风险投资人、学术辩手、脱口秀演员、政治评论员',
     compatible: ['INFJ', 'INTJ', 'ENFJ', 'ENTJ'],
-    growth: '将层出不穷的想法落地执行，坚持完成一件事，比提出十个想法更有意义。',
+    growth: '你的大脑是一片肥沃的土地，但土地上种了太多种子，每一株都在争夺阳光。试着选出其中最值得培育的那一株，给它浇水、施肥、等待它开花——那种坚持到底的成就感，是再多新想法都替代不了的。',
   },
   INFJ: {
     archetype: '提倡者·先知',
     tagline: 'THE ADVOCATE · VISIONARY IDEALIST',
     color: '#2c4a5a',
-    desc: '你是最稀有的人格类型之一，拥有惊人的洞察力和强烈的利他主义情怀。主导功能内倾直觉（Ni）让你深刻感知他人和情境中隐藏的模式；外倾情感（Fe）则驱使你将这份洞见服务于他人与社会。',
-    cognitive: '主导功能：内倾直觉（Ni）— 潜意识整合信息，形成深刻洞见\n辅助功能：外倾情感（Fe）— 感知集体情感，促进和谐\n第三功能：内倾思维（Ti）— 内部逻辑的校验\n劣势功能：外倾感觉（Se）— 有时与外部物质世界脱节',
-    strengths: ['深刻洞察力', '强烈同理心', '坚定的价值观', '创意与远见', '激励他人'],
-    careers: '心理咨询、作家、社会工作、教育、医疗、宗教与哲学',
+    population: '约 1%',
+    populationNote: '全球人口中约1%，十六型中最稀有',
+    celebrities: ['纳尔逊·曼德拉', '特蕾莎修女', '马丁·路德·金', '卡尔·荣格本人', 'J.K.罗琳', '柏拉图', '赵雷'],
+    desc: 'INFJ，「内倾直觉情感判断型」，是所有十六型人格中出现频率最低的类型，全球人口中大约只有1%。然而这稀有并非偶然——INFJ是一种深刻的矛盾体：你既是深刻的内省者，又是对外部世界影响最深远的理想主义者。\n\n你的主导功能内倾直觉（Ni）是你最神秘的天赋。它不依赖逻辑推导，而是通过某种难以解释的整体感知，直接「看见」事物深层的模式和人心深处的动机。很多INFJ都有过这样的体验：明明没有足够的信息，却对某个情境或某个人有着异常准确的预感。这种洞察力有时让自己都感到不安。\n\n辅助功能外倾情感（Fe）是驱使你走出内心世界、与外部人类连接的力量。你不只是理解他人的痛苦，你会以几乎生理性的方式感受它。这种深刻的同理心是你最大的礼物，也是你最沉重的负担——因为它让你很难在他人受苦时袖手旁观。\n\nINFJ有着罕见的「先知气质」：你能清晰地看见理想应该是什么样子，并以强烈的使命感推动自己为之努力，哪怕这意味着长期的孤独和被误解。你是那种会为了一个值得的理由燃烧自己的人。',
+    cognitive: '主导功能：内倾直觉（Ni）— 潜意识整合信息，以直觉「顿悟」形式预见深层模式与未来走向\n辅助功能：外倾情感（Fe）— 高度感知集体情感，本能地促进和谐、服务于他人\n第三功能：内倾思维（Ti）— 用内部逻辑校验直觉和情感判断\n劣势功能：外倾感觉（Se）— 有时与外部物质世界脱节，压力下可能陷入感官放纵',
+    strengths: ['深刻的人性洞察力', '强烈同理心', '坚定的价值观', '创意与远见', '激励他人成长', '战略性理想主义', '深度倾听能力'],
+    weaknesses: '极难放下对他人的责任感，容易忽视自身需求；长期承担他人情感会导致严重耗竭；对背叛和不公正极为敏感；有时理想与现实差距令自己痛苦；倾向于一次性「关门」切断关系，缺乏中间地带。',
+    careers: '心理咨询师、社会活动家、人道主义工作者、作家、教育工作者、灵性导师、非营利组织领导者、医生（心理/精神科）',
     compatible: ['ENTP', 'ENFP', 'INTJ', 'INFJ'],
-    growth: '你常常将他人置于自己之上，学会照顾自己的需求同样是一种美德。设定健康的边界，才能持续地给予。',
+    growth: '你拥有照亮他人的光，但请记得：灯油有限。设定界限不是自私，而是让你能够持续地给予。学会在给予之前先问自己：「此刻，我还剩多少？」把照顾自己视为一种使命，而不是一种奢侈。',
   },
   INFP: {
     archetype: '调停者·诗人',
     tagline: 'THE MEDIATOR · IDEALISTIC DREAMER',
     color: '#4a5a2c',
-    desc: '你拥有丰富的内心世界和对美与意义的深切追求，是真正的理想主义者。主导功能内倾情感（Fi）深刻的个人价值观是你一切行动的罗盘；外倾直觉（Ne）则带给你无穷的创意和对可能性的想象。',
-    cognitive: '主导功能：内倾情感（Fi）— 深层个人价值观，真实性至上\n辅助功能：外倾直觉（Ne）— 探索想象的可能性\n第三功能：内倾感觉（Si）— 保留有意义的记忆和传统\n劣势功能：外倾思维（Te）— 对规则和效率系统感到疲惫',
-    strengths: ['创造力', '同理心', '开放包容', '深刻的价值观', '热情与奉献'],
-    careers: '作家、诗人、艺术家、心理咨询师、教育者、非营利机构',
+    population: '约 4%',
+    populationNote: '全球约4%，在艺术家和作家群体中比例最高',
+    celebrities: ['J.R.R.托尔金', '威廉·莎士比亚', '约翰尼·德普', '奥黛丽·赫本', '朴树', '村上春树', '梵高'],
+    desc: 'INFP，「内倾情感直觉感知型」，是那些把整个宇宙装进心里的人。你的内心世界丰富得令人难以置信——那是一片只有你自己能够完全进入的私人宇宙，充满了象征、意象、理想和梦境。外人所见的平静或沉默，往往掩盖着内里汹涌的精神活动。\n\n你的主导功能内倾情感（Fi）是你人格的灵魂。它不是关于外部他人的情感，而是一套极其深刻、精密的个人价值体系。你对「真实性」有着近乎本能的追求——虚伪、表演、言不由衷，都会让你感到物理性的不适。你活在自己的价值观里，而那些价值观几乎不可动摇。\n\n辅助功能外倾直觉（Ne）为这套内在价值体系注入了无穷的创意燃料。你能在平凡事物中看见深刻的象征意义，能将毫无关联的概念编织成浑然天成的意象。许多最伟大的文学家、艺术家和诗人都拥有这种特质。\n\nINFP是深刻的理想主义者——你对世界应该是什么样子，有着清晰而坚定的愿景。当现实不符合理想时，你不会轻易妥协，而是会在内心长期承载着这种张力，这既是你创作力的源泉，也是你痛苦的根源。',
+    cognitive: '主导功能：内倾情感（Fi）— 深层个人价值观体系，真实性是最高准则\n辅助功能：外倾直觉（Ne）— 探索无限可能性，在万物中发现象征与关联\n第三功能：内倾感觉（Si）— 保留有深刻意义的记忆和个人传统\n劣势功能：外倾思维（Te）— 对客观规则、系统效率和外部组织感到疲惫',
+    strengths: ['深度创造力', '强烈同理心', '开放包容', '坚不可摧的价值观', '热情与奉献精神', '象征性思维', '独特的审美感知'],
+    weaknesses: '极难开口表达需求或冲突，容易积压情绪；理想主义与现实的落差会导致慢性失落感；自我批评倾向强烈；容易逃避困难的实际决策；对不认可的感受极为敏感。',
+    careers: '作家、诗人、插画师、心理咨询师、音乐创作人、哲学研究员、人文教育者、社会工作者、动画导演',
     compatible: ['ENFJ', 'ENTJ', 'INFJ', 'INFP'],
-    growth: '将你内心世界的美丽带到现实中，完成作品比构想完美更重要。理想的关系也需要经历现实的磨砺才能成长。',
+    growth: '你的内心是这个世界上最美的地方之一，但请不要把它变成一座孤岛。试着把你内心世界的美丽带到外面来，哪怕是不完整的、未打磨的形式。不完美地表达，远比完美地沉默更有价值。',
   },
   ENFJ: {
     archetype: '主人公·教导者',
     tagline: 'THE PROTAGONIST · CHARISMATIC GUIDE',
     color: '#5a3a2c',
-    desc: '你是天生的领袖，以温暖和感召力激励身边的每一个人。主导功能外倾情感（Fe）让你对集体的情感需求高度敏感，并本能地促进和谐；内倾直觉（Ni）赋予你看穿事物本质的远见。',
-    cognitive: '主导功能：外倾情感（Fe）— 感知并回应集体情感，营造和谐\n辅助功能：内倾直觉（Ni）— 洞察人和情境的深层模式\n第三功能：外倾感觉（Se）— 对当下环境的觉察\n劣势功能：内倾思维（Ti）— 有时在严密逻辑分析上不够深入',
-    strengths: ['天然感召力', '同理心', '组织能力', '利他主义', '沟通艺术'],
-    careers: '教师、教练、人力资源、政治家、公关、社会活动家',
+    population: '约 2%',
+    populationNote: '全球约2%，在教育和领导力领域尤为突出',
+    celebrities: ['奥巴马', '奥普拉·温弗瑞', '曼德拉（部分特征）', '昂山素季', '约翰·库萨克', '艾玛·汤普森'],
+    desc: 'ENFJ，「外倾情感直觉判断型」，是天生的催化剂——你走到哪里，就把成长和凝聚带到哪里。你对人的潜力有着近乎超自然的敏感度，你总能在人群中找到那个最需要被看见的人，并知道用什么方式点燃他们内心的火焰。\n\n你的主导功能外倾情感（Fe）让你对集体的情感状态高度敏感，你几乎能感知到房间里每一个人的情绪波动，并本能地想要回应、调和、抚慰。这不是刻意为之，而是你存在的自然状态——你生来就是要连接人心的。\n\n辅助功能内倾直觉（Ni）赋予你在人际关系和社会动态中看穿表象的能力。你不只是关心人们现在是什么样子，你更关心他们可以成为什么样子，并愿意为此付出巨大的心力去陪伴和引导。\n\nENFJ往往肩负着沉重的使命感，你相信自己有责任让周围的世界更美好。这种使命感是你的超能力，但也是你最大的风险——因为你往往会在不知不觉中将他人的问题内化为自己的责任，直到精疲力竭。',
+    cognitive: '主导功能：外倾情感（Fe）— 高度感知并回应集体情感，本能地营造和谐与凝聚\n辅助功能：内倾直觉（Ni）— 洞察人和情境的深层模式，预见成长的可能\n第三功能：外倾感觉（Se）— 对当下环境和细节的觉察力\n劣势功能：内倾思维（Ti）— 对纯粹客观的逻辑分析有时缺乏深度，易受情感影响判断',
+    strengths: ['天然感召力与领导力', '深度同理心', '卓越组织能力', '利他主义', '沟通与激励艺术', '长远人才眼光', '营造归属感'],
+    weaknesses: '过度关注他人感受，容易忽视自身真实需求；很难对他人说「不」；容易过度承担责任导致精疲力竭；对批评极为敏感；在帮助他人时可能无意识地推行自己的价值观。',
+    careers: '教师、心理咨询师、非营利组织领导者、人力资源总监、政治家、生命教练、社区建设者、公益律师',
     compatible: ['INFP', 'ISFP', 'INTJ', 'INTP'],
-    growth: '你习惯照顾所有人，但别忘了自己的需求。学会说"不"，是对自己最重要的关怀。',
+    growth: '你如此擅长照顾所有人，以至于有时候没有人意识到你也需要被照顾。学会设立边界是一种自我尊重，也是对关系的长期投资。试着在每天开始之前问自己：「今天，我需要什么？」',
   },
   ENFP: {
     archetype: '竞选者·激励者',
     tagline: 'THE CAMPAIGNER · FREE SPIRIT',
     color: '#5a4a2c',
-    desc: '你充满热情和创意，把生活当作无限可能的画布来探索。主导功能外倾直觉（Ne）让你以惊人的速度发现新想法和关联；内倾情感（Fi）赋予你深刻的个人价值观和真实性，让你的热情有意义。',
-    cognitive: '主导功能：外倾直觉（Ne）— 看见无处不在的可能性和关联\n辅助功能：内倾情感（Fi）— 深层价值观驱动真实的热情\n第三功能：外倾思维（Te）— 将想法付诸实际执行\n劣势功能：内倾感觉（Si）— 对常规、细节和历史数据不感兴趣',
-    strengths: ['感染力', '创造力', '同理心', '沟通能力', '热情与好奇心'],
-    careers: '创意产业、记者、演员、教练、营销、人道主义工作',
+    population: '约 8%',
+    populationNote: '全球约8%，是外向型中相对常见的类型',
+    celebrities: ['罗宾·威廉姆斯', '狄更斯', '安妮·弗兰克', '菲利普·赛默·霍夫曼', '毛不易', '泰勒·斯威夫特（部分特征）'],
+    desc: 'ENFP，「外倾直觉情感感知型」，是那种走进房间就能让整个空间温度上升的人。你的热情不是表演出来的，而是发自内心最深处的——你真的相信每个人都有惊人的潜力，真的相信世界可以变得更好，真的在每一段对话中都全情投入。\n\n你的主导功能外倾直觉（Ne）像一台永不停歇的可能性雷达，在任何情境中都能看见别人看不见的选项、关联和惊喜。你不按常理出牌不是因为叛逆，而是因为你的大脑天生就在寻找那条更有趣的路。\n\n辅助功能内倾情感（Fi）是你热情背后的深度锚点。你不只是情绪化，你有着非常清晰的个人价值观，知道自己真正在乎什么，并且愿意为之坚持。这让你的热情不只是表面的活力，而是有根基的真实。\n\nENFP最神奇的能力是让人感到被看见。你能在三分钟的对话里，找到一个陌生人最独特的闪光点，并让对方对自己重新产生期待。这是一种罕见的天赋，但也是一种容易让自己情感过载的特质。',
+    cognitive: '主导功能：外倾直觉（Ne）— 持续发现可能性和跨领域关联，充满对未来的想象力\n辅助功能：内倾情感（Fi）— 深层个人价值观驱动真实而有深度的热情\n第三功能：外倾思维（Te）— 在需要时展现务实的执行力\n劣势功能：内倾感觉（Si）— 对惯例、细节和历史数据不感兴趣，容易忘记过去的承诺',
+    strengths: ['极强感染力与魅力', '创造力', '深度同理心', '沟通表达能力', '点燃他人潜力', '适应力与弹性', '跨界创意思维'],
+    weaknesses: '难以维持长期专注于单一目标；容易因情感受伤而大起大落；对批评极为敏感；承诺过多、兑现困难；容易陷入对完美关系和生活的不切实际幻想。',
+    careers: '创意总监、记者、演员、生命教练、心理治疗师、营销策略师、教育创新者、人道主义工作者、播客主持人',
     compatible: ['INTJ', 'INFJ', 'ENFJ', 'ENTJ'],
-    growth: '你的热情是礼物，但频繁跳跃会耗散能量。学会深挖一件事，坚持到见到果实。',
+    growth: '你的热情是你送给世界最好的礼物，但热情是有限的资源。学会选择性地投入——不是所有人和事都值得你全部的光。试着深挖一件真正值得的事情，而不是把自己分散在一百个令人兴奋的开始里。',
   },
   ISTJ: {
     archetype: '检察员·监督者',
     tagline: 'THE LOGISTICIAN · RELIABLE GUARDIAN',
     color: '#3a3a5a',
-    desc: '你是可靠性和责任感的代名词，在任何组织中都是不可或缺的支柱。主导功能内倾感觉（Si）让你积累丰富的经验和数据，建立稳固的判断；外倾思维（Te）则让你高效地执行和管理。',
-    cognitive: '主导功能：内倾感觉（Si）— 以丰富的过去经验作为决策基础\n辅助功能：外倾思维（Te）— 系统、高效地管理现实任务\n第三功能：内倾情感（Fi）— 坚守个人价值观，鲜少外露\n劣势功能：外倾直觉（Ne）— 面对全新情况时可能感到不适',
-    strengths: ['高度可靠', '条理分明', '责任心强', '耐心细心', '坚持不懈'],
-    careers: '会计、审计、法律、行政、军队、工程、数据库管理',
+    population: '约 13%',
+    populationNote: '全球约13%，是十六型中最常见的类型之一',
+    celebrities: ['乔治·华盛顿', '沃伦·巴菲特', '安格拉·默克尔', '蜂蜜与四叶草（作者）', '宫崎骏（部分特征）', '朴槿惠'],
+    desc: 'ISTJ，「内倾感觉思维判断型」，是社会运转的基石。当世界需要可靠性、责任感和坚如磐石的稳定时，ISTJ就站在那里。你不寻求聚光灯，但你的存在让一切井然有序。\n\n你的主导功能内倾感觉（Si）是你最核心的认知工具——它不只是记忆，而是一个庞大的个人数据库，储存着你经历过的每一件事的细节、感受和规律。当面对新情况时，你会本能地将它与这个数据库中的过往经验对比，找到最可靠的处理方式。\n\n辅助功能外倾思维（Te）让你以高效、客观的方式将这些经验转化为可执行的系统和标准。你不喜欢模糊，你需要规则、流程和明确的责任归属。在你看来，「有章可循」是对混乱最有效的防御。\n\nISTJ的可靠性是传说级别的。你会记住每一个承诺，按时完成每一项任务，准时出现在每一个约定。这种高度的自律和责任心让你在任何团队和组织中都是不可或缺的核心。你不是那种会发表激情演讲的人，但你会是最后一个还在加班确保一切准确无误的人。',
+    cognitive: '主导功能：内倾感觉（Si）— 以丰富的过往经验作为决策基础，高度重视细节的准确性\n辅助功能：外倾思维（Te）— 系统、高效地将经验转化为可执行的规则和流程\n第三功能：内倾情感（Fi）— 深层个人价值观，坚守原则，低调内敛\n劣势功能：外倾直觉（Ne）— 面对全新变化和没有先例的情境时感到不适',
+    strengths: ['极高可靠性', '条理分明', '强烈责任心', '耐心细致', '坚持不懈', '忠诚守信', '高度自律'],
+    weaknesses: '对变化的适应较慢，倾向于依赖已有模式；有时过于墨守成规，难以接受新方法；可能因强调原则而忽略情感需求；在创新和突破思维方面相对受限；承受情感表达压力时可能压抑过度。',
+    careers: '会计师、审计师、法官、行政管理者、数据库管理员、军队军官、建筑师（执行层）、档案管理员、项目经理',
     compatible: ['ESFP', 'ESTP', 'ISFJ', 'ISTJ'],
-    growth: '世界在变化，保持开放对新方法同样重要。尝试偶尔打破常规，你可能会发现意外的惊喜。',
+    growth: '你已经建立了别人羡慕的稳定，但稳定和成长有时是矛盾的。试着偶尔放下「我们一直都是这样做的」，去问一问「有没有更好的做法」。变化不总是威胁，有时它只是下一个更可靠的系统的开始。',
   },
   ISFJ: {
     archetype: '守卫者·保护者',
     tagline: 'THE DEFENDER · WARM PROTECTOR',
     color: '#3a5a4a',
-    desc: '你是无私奉献的守护者，以细腻的关怀为所爱之人构建安全感。主导功能内倾感觉（Si）以惊人的记忆力保留每一个重要的细节和经历；外倾情感（Fe）则驱使你将这份关怀转化为对他人实质性的支持。',
-    cognitive: '主导功能：内倾感觉（Si）— 细腻的感知力与丰富的细节记忆\n辅助功能：外倾情感（Fe）— 本能地照顾他人情感需求\n第三功能：内倾思维（Ti）— 内部逻辑分析\n劣势功能：外倾直觉（Ne）— 对大胆变化有时感到担忧',
-    strengths: ['温暖关怀', '可靠忠诚', '注重细节', '耐心体贴', '服务精神'],
-    careers: '护士、教师、社工、行政、图书管理员、客户服务',
+    population: '约 14%',
+    populationNote: '全球约14%，是所有类型中最常见的之一',
+    celebrities: ['碧昂斯（部分特征）', '凯特·米德尔顿', '阿甘正传主角原型', '特蕾莎修女（部分特征）', '罗莎·帕克斯'],
+    desc: 'ISFJ，「内倾感觉情感判断型」，是那种悄悄记住你咖啡加几分糖、在你生日前一个月就开始准备礼物的人。你的关怀不是表演，而是一种极其深刻的生活方式——你以照顾他人为己任，并从中获得真实的满足感。\n\n你的主导功能内倾感觉（Si）赋予你惊人的细节记忆力，尤其是关于人和关系的细节。你会记住朋友的过敏反应、家人讨厌什么食物、同事上次开会时说的那句话。这种记忆不是刻意为之，而是因为你真的在乎，而在乎会让你记住一切。\n\n辅助功能外倾情感（Fe）驱使你将这种关怀具体化为行动——你不只是感受到对方的需求，你会做点心、递杯水、发条消息说「我想到你了」。你的爱是动词，不是名词。\n\nISFJ往往不善言辞地表达自己的需求，因为你已经习惯了作为给予者的角色。但这种长期的不对等会在某一天以意想不到的方式显现——疲惫、委屈或突然的情感崩溃。',
+    cognitive: '主导功能：内倾感觉（Si）— 细腻的感知力与强大的关系细节记忆，重视传统与熟悉感\n辅助功能：外倾情感（Fe）— 本能地感知并回应他人情感需求，营造温暖环境\n第三功能：内倾思维（Ti）— 用内部逻辑分析和校验信息\n劣势功能：外倾直觉（Ne）— 对大胆变化和前所未有的可能性较为抗拒',
+    strengths: ['温暖细腻的关怀', '极高可靠性与忠诚', '对细节的惊人记忆', '耐心体贴', '服务精神', '维系社群凝聚力', '传统的守护者'],
+    weaknesses: '难以表达自己的真实需求；长期压抑会导致情感积累爆发；对变化和不确定性感到焦虑；面对不公正时往往选择沉默而不是抗争；容易在关系中承担过多而不知疲倦，直到精疲力竭。',
+    careers: '护士、儿科医生、小学教师、社会工作者、行政助理、家庭咨询师、图书管理员、营养师、后勤管理员',
     compatible: ['ESFP', 'ESTP', 'ISFJ', 'ISTJ'],
-    growth: '你习惯了给予，却不善于接受。学会表达自己的需求，让别人也有机会关心你。',
+    growth: '你给予的方式是世界上最温柔的语言之一，但语言是双向的。练习开口说出你的需要，让那些爱你的人有机会照顾你。接受帮助，也是给对方一个爱你的机会。',
   },
   ESTJ: {
     archetype: '总经理·管理者',
     tagline: 'THE EXECUTIVE · ORDER AND TRADITION',
     color: '#5a2c3a',
-    desc: '你是秩序和效率的捍卫者，以无可挑剔的组织能力管理事务和人员。主导功能外倾思维（Te）以系统、客观的方式组织外部世界；内倾感觉（Si）则为决策提供丰富的经验和传统作为支撑。',
-    cognitive: '主导功能：外倾思维（Te）— 高效组织和管理外部系统\n辅助功能：内倾感觉（Si）— 以传统和经验作为可靠的参照\n第三功能：外倾直觉（Ne）— 对新可能性有一定感知\n劣势功能：内倾情感（Fi）— 对个人内心情感的处理较少',
-    strengths: ['强大执行力', '组织能力', '忠于职责', '可靠稳定', '直接坦率'],
-    careers: '企业管理、军队、法律、金融、行政、项目管理',
+    population: '约 9%',
+    populationNote: '全球约9%，在企业管理和政府机构中比例偏高',
+    celebrities: ['弗兰克·辛纳屈', '约翰·D·洛克菲勒', '奥托·冯·俾斯麦', '杰克·韦尔奇（部分）', '朴正熙', '盖尔·金'],
+    desc: 'ESTJ，「外倾感觉思维判断型」，是秩序和效率的守护者。你相信规则不是束缚，而是文明的支撑结构；你相信传统不是守旧，而是经过验证的智慧。你的存在，是对混乱和无序最有力的回应。\n\n你的主导功能外倾思维（Te）以压倒性的系统性思维组织外部世界——职责要清晰、流程要规范、标准要统一。你不喜欢模糊，你会迅速将模糊的情况转化为可以操作的决定和规则。\n\n辅助功能内倾感觉（Si）为你的决策提供坚实的经验支撑。你不是冒险者，你的每一次决策背后都有着对历史经验的充分参考。这使你在需要可靠性和稳定性的领域中无与伦比。\n\nESTJ是天然的管理者和组织者——你能清楚地看见什么需要被做、谁应该去做、什么时候完成，并以不容置疑的方式推动其落实。你的直率和高标准会让一些人望而生畏，但你的团队通常知道，跟着ESTJ，事情一定会被做成。',
+    cognitive: '主导功能：外倾思维（Te）— 以客观、系统的方式高效组织外部世界，厌恶低效和模糊\n辅助功能：内倾感觉（Si）— 以传统和个人历史经验作为可靠的决策参照\n第三功能：外倾直觉（Ne）— 对新可能性和创新思路有一定开放性\n劣势功能：内倾情感（Fi）— 对个人内心深处的情感和他人的情感需求关注不足',
+    strengths: ['强大的执行力', '出色的组织能力', '忠于职责', '可靠稳定', '直接坦率', '维护标准的能力', '高效决策'],
+    weaknesses: '有时为了效率忽略情感成本；对非传统方式或思路抵触较强；可能在无意中以高标准压制他人创造力；对规则的坚持有时缺乏灵活性；情感表达较为有限，难以进行深层次的情感沟通。',
+    careers: '企业高管、法官、军队指挥官、金融监管官员、工程项目经理、地方政府官员、传统行业创始人、大学院长',
     compatible: ['ISFP', 'ISTP', 'ESFJ', 'ESTJ'],
-    growth: '尝试理解规则背后的情感，有时候一个人的感受比效率更重要。灵活性也是一种领导力。',
+    growth: '你建立了强大的外部秩序，但内心世界同样需要探索。试着在一次决策之前停下来，不问「这是否高效」，而问「这对人的影响是什么」。效率和人情不是对立的，它们可以共存，只需要你稍微放慢一步。',
   },
   ESFJ: {
     archetype: '执政官·照料者',
     tagline: 'THE CONSUL · COMMUNITY BUILDER',
     color: '#5a4a3a',
-    desc: '你是天生的社交能手，以无尽的热情和关怀维系着你的人际网络。主导功能外倾情感（Fe）让你本能地感知集体需求并采取行动；内倾感觉（Si）则赋予你对传统和惯例的深厚尊重。',
-    cognitive: '主导功能：外倾情感（Fe）— 感知集体情感，维系社交和谐\n辅助功能：内倾感觉（Si）— 尊重传统，以经验为依据\n第三功能：外倾直觉（Ne）— 对新情境有一定的开放性\n劣势功能：内倾思维（Ti）— 对纯粹逻辑分析有时感到不适',
-    strengths: ['温暖热情', '忠诚可靠', '组织社交活动', '关爱他人', '合作精神'],
-    careers: '医疗、教育、人力资源、社区工作、销售、活动策划',
+    population: '约 12%',
+    populationNote: '全球约12%，是女性中最常见的类型之一',
+    celebrities: ['泰勒·斯威夫特（部分特征）', '惠特尼·休斯顿', '比尔·克林顿（部分）', '莎拉·杰西卡·帕克', '周迅（部分特征）'],
+    desc: 'ESFJ，「外倾感觉情感判断型」，是人际网络的织造者。你记得所有人的名字、生日和故事，你是朋友聚会的发起者、家庭节日的主持人、同事聚餐的组织者。你天生知道如何让一群人感到凝聚和温暖。\n\n你的主导功能外倾情感（Fe）让你以极高的灵敏度感知集体中的情感状态，并本能地朝向和谐的方向行动。你不只是善良，你是将善良系统化的人——你会思考：今天谁看起来不开心？上次聚会谁被忽视了？\n\n辅助功能内倾感觉（Si）为你的人际关怀添加了历史的厚度。你会记住朋友多年前说过的一句话，并在对方最需要的时候用行动回应它。你的关怀不是冲动，而是经过时间积累的温情。\n\nESFJ最在意「我们」——你的幸福感高度依赖于关系的质量和他人的认可。这种对归属感的深切需求是你的动力，但如果它演变成对他人评价的过度敏感，也可能成为你的枷锁。',
+    cognitive: '主导功能：外倾情感（Fe）— 高度敏感地感知集体情感，本能地维系社交和谐\n辅助功能：内倾感觉（Si）— 尊重传统和经验，以历史关系记忆建立情感纽带\n第三功能：外倾直觉（Ne）— 对新情境和新关系有一定的开放性\n劣势功能：内倾思维（Ti）— 在纯粹的客观逻辑分析上较为吃力，决策容易受情感影响',
+    strengths: ['温暖热情的社交能力', '极高忠诚度', '出色的活动组织力', '关爱他人的天赋', '合作与团结精神', '情感上的可靠性', '维系集体记忆'],
+    weaknesses: '非常在意他人评价，容易因批评而受伤；倾向于回避冲突导致内心积压；可能在帮助他人时无意中将自己的价值观强加于人；对不服从期望的人容易产生失望情绪；有时为了维持和谐而忽视自己真实感受。',
+    careers: '教师、护士、社区工作者、人力资源经理、婚礼策划师、公关专员、儿科医生、家庭咨询师、酒店管理',
     compatible: ['ISFP', 'ISTP', 'ESFJ', 'ESTJ'],
-    growth: '你非常在意他人的评价，这可能成为一种束缚。培养内在的自我认同，让价值不依赖于外界认可。',
+    growth: '你为他人的世界付出了如此之多，也许是时候问问：我的世界里，有多少是真正属于我的？试着在人际关系中保留一些空间，不是给别人，而是给自己。你的价值不需要通过别人的认可来证明。',
   },
   ISTP: {
     archetype: '鉴赏家·工匠',
     tagline: 'THE VIRTUOSO · MASTERFUL CRAFTSMAN',
     color: '#2c3a4a',
-    desc: '你是天生的工匠，以冷静的头脑和灵巧的双手掌握一切机械与系统。主导功能内倾思维（Ti）构建精密的内部逻辑框架以理解系统运作；外倾感觉（Se）则让你对当下的物理世界保持高度敏锐的感知。',
-    cognitive: '主导功能：内倾思维（Ti）— 分析系统内在逻辑，追求精确理解\n辅助功能：外倾感觉（Se）— 对当下物理世界的敏锐感知\n第三功能：内倾直觉（Ni）— 偶尔的深层洞察\n劣势功能：外倾情感（Fe）— 对他人情感和社交礼仪不够敏感',
-    strengths: ['动手能力', '冷静理性', '危机处理', '灵活应变', '独立自主'],
-    careers: '工程师、飞行员、外科医生、程序员、机械师、消防员',
+    population: '约 5%',
+    populationNote: '全球约5%，男性中比例略高于女性',
+    celebrities: ['布鲁斯·李', '迈克尔·乔丹（部分特征）', '查克·叶格尔（试飞员）', '克林特·伊斯特伍德', '弗吉尼亚·伍尔夫（部分）'],
+    desc: 'ISTP，「内倾思维感觉感知型」，是用手思考的人。当别人在分析和计划时，你已经拆解了半台发动机，你的理解不来自语言，而来自触觉、机理和直接操作。你和物质世界之间有一种近乎直觉的默契。\n\n你的主导功能内倾思维（Ti）构建的不是理论体系，而是一套关于系统如何运作的精确内部模型。你需要彻底理解一个机制的每一个齿轮和连接点，只有这样你才会感到满足。辅助功能外倾感觉（Se）让你对当下的物理环境保持极度敏锐——你能感知到微弱的声音变化、机械运转的细微异常、甚至空气中紧张气氛的变化。\n\nISTJ最令人印象深刻的是他们的危机处理能力。当他人在紧急情况下陷入慌乱时，你反而会变得极度平静、高效和精准。这不是训练出来的，而是你天生对高压情境的适应——你在压力下会变得更清醒，而不是更迷糊。\n\n在人际关系上，ISTP是最难以捉摸的类型之一。你不喜欢被束缚，你珍视独立，你用行动而非语言表达关怀。那些能够欣赏你沉默之中的深刻、不试图改变你的人，往往能和你建立出异常稳固的关系。',
+    cognitive: '主导功能：内倾思维（Ti）— 构建关于系统运作机制的精确内部模型，追求对「为什么」的彻底理解\n辅助功能：外倾感觉（Se）— 对物理世界的高度敏锐感知，专注于当下的实际操作\n第三功能：内倾直觉（Ni）— 偶尔的深层洞察和对模式的直觉感知\n劣势功能：外倾情感（Fe）— 对他人的情感需求和社交规范有时感到困惑或不适',
+    strengths: ['卓越动手能力', '危机下的冷静与高效', '灵活应变', '深度技术理解', '独立自主', '实用主义', '对机械系统的直觉'],
+    weaknesses: '情感表达极为有限，常被误解为冷漠；容易在关系中给人疏远的感觉；对长期计划和未来承诺不感兴趣；可能因寻求刺激而做出冲动行为；对自己和他人的情感健康关注不足。',
+    careers: '飞行员、急救外科医生、工程师、程序员、特种部队、赛车手、建筑工程师、法医专家、电影特效师',
     compatible: ['ESTJ', 'ESFJ', 'ISTP', 'ISTJ'],
-    growth: '尝试表达你的情感，让身边的人知道你的感受。长期的情感压抑可能以意想不到的方式爆发。',
+    growth: '你对物理世界的理解如此精准，但情感的机制同样值得探索。试着把情感当作另一种需要理解的系统——不是因为它让你舒适，而是因为理解它会让你与真正重要的人建立更深的连接。',
   },
   ISFP: {
     archetype: '探险家·艺术家',
     tagline: 'THE ADVENTURER · SPONTANEOUS ARTIST',
     color: '#3a5a3a',
-    desc: '你是安静的艺术家，以细腻的感受力体验和创造世界的美丽。主导功能内倾情感（Fi）深刻的个人价值观让你对真实和美有着本能的追求；外倾感觉（Se）则让你活在当下，以感官充分体验生命。',
-    cognitive: '主导功能：内倾情感（Fi）— 深层个人价值观，高度真实性\n辅助功能：外倾感觉（Se）— 沉浸于当下的感官体验\n第三功能：内倾直觉（Ni）— 偶尔的深层洞察和象征感知\n劣势功能：外倾思维（Te）— 对长期规划和组织系统不太感兴趣',
-    strengths: ['艺术创造力', '同理心', '灵活开放', '真实自然', '活在当下'],
-    careers: '艺术家、设计师、音乐家、摄影师、厨师、护士',
+    population: '约 9%',
+    populationNote: '全球约9%，在艺术和设计领域比例较高',
+    celebrities: ['迈克尔·杰克逊', '弗里达·卡罗', '王家卫（部分特征）', '奥黛丽·赫本（部分）', '李安', '科比·布莱恩特（部分）'],
+    desc: 'ISFP，「内倾情感感觉感知型」，是活在感官和当下的人。你不只是看世界，你体验世界——光线的质感、音乐的触感、色彩的情绪，对你来说都是真实的语言。你对美有着近乎生理性的敏感，一件做工粗糙的东西真的会让你感到不适。\n\n你的主导功能内倾情感（Fi）是你的灵魂罗盘——它不是关于他人情感的感知，而是一套极其深刻、个人化的价值体系。你对真实性的要求极高，任何虚伪、表演或言不由衷都会让你本能地想要撤退。辅助功能外倾感觉（Se）让你沉浸于当下的感官体验，你活在一个个鲜活的此刻里，而不是抽象的未来计划中。\n\nISFP是温柔的，但这种温柔下藏着惊人的坚定。你不会高声声张自己的价值观，但如果有人真的触碰了你的底线，你会以一种令人惊讶的决然离开——没有争论，没有解释，只是走了。\n\n你的创造力是有机生长的，而不是计划出来的。你的最佳作品往往诞生于某个触动你内心的瞬间，而不是被任务驱动的时候。给你自由，你就能创造奇迹。',
+    cognitive: '主导功能：内倾情感（Fi）— 深层个人价值观体系，真实性是最高追求\n辅助功能：外倾感觉（Se）— 沉浸于当下的感官体验，对美有天然的感知力\n第三功能：内倾直觉（Ni）— 偶尔的深层象征感知和直觉洞察\n劣势功能：外倾思维（Te）— 对长期规划、系统效率和外部组织不感兴趣',
+    strengths: ['天赋异禀的艺术感知力', '深度同理心', '灵活开放', '真实自然', '活在当下的能力', '对美的精确感知', '温柔而坚定的价值观'],
+    weaknesses: '极度回避冲突，导致真实感受被压抑；对批评极为敏感，容易受伤后自我封闭；难以进行长期规划和坚持；容易在关系中过度迁就而失去自我；在压力下可能突然切断关系而不做解释。',
+    careers: '艺术家、时装设计师、音乐家、摄影师、厨师、室内设计师、动物治疗师、手工艺人、电影摄影师',
     compatible: ['ESTJ', 'ESFJ', 'ISFP', 'ISTJ'],
-    growth: '你倾向于回避冲突，但有时候说出自己的想法才是对关系最好的尊重。',
+    growth: '你的美丽藏得太深了，世界需要看见它。试着说出一件你在乎的事情，哪怕只有一个人听。不是为了改变他，只是为了让真实的你被世界看见。你的温柔不需要保护，它需要被表达。',
   },
   ESTP: {
     archetype: '企业家·行动者',
     tagline: 'THE ENTREPRENEUR · BOLD PRAGMATIST',
     color: '#6a3a2c',
-    desc: '你是行动的化身，在现实世界中以惊人的实用主义和魅力快速推进。主导功能外倾感觉（Se）让你对当下的机遇保持极度敏锐；内倾思维（Ti）则帮你快速分析情境，做出精准的即时判断。',
-    cognitive: '主导功能：外倾感觉（Se）— 极度敏锐地感知当下机遇和环境\n辅助功能：内倾思维（Ti）— 快速的逻辑分析与即时判断\n第三功能：外倾情感（Fe）— 社交魅力和人际影响力\n劣势功能：内倾直觉（Ni）— 对长远后果有时考虑不足',
-    strengths: ['行动力', '社交魅力', '危机处理', '谈判技巧', '务实直接'],
-    careers: '销售、企业家、警察、运动员、演员、急救医疗',
+    population: '约 4%',
+    populationNote: '全球约4%，在运动员和销售精英中比例较高',
+    celebrities: ['唐纳德·特朗普', '麦迪逊', '欧内斯特·海明威', '杰克·尼克尔森', '博尔特（尤塞恩）', '马云（部分特征）'],
+    desc: 'ESTP，「外倾感觉思维感知型」，是那种凭直觉就能看穿一个房间里所有权力动态的人。你不只是行动派，你是把「此刻」活到极致的人——你的大脑实时处理着周遭环境的每一个细节，并在毫秒之间做出最优判断。\n\n你的主导功能外倾感觉（Se）是你最强大的天赋——对当下机遇的极度敏锐。你能在别人还没反应过来时就看到窗口，并已经行动了。辅助功能内倾思维（Ti）赋予你快速的逻辑分析能力，让你的直觉行动有清晰的逻辑支撑，而不只是冲动。\n\nESTP是天生的魅力家，你能在五分钟内和陌生人建立起真实的连接，并以一种不知不觉的方式影响对方的判断。这不是操控，而是你天生理解人性的本能——你知道什么话说出来能产生共鸣，什么动作能打破防御。\n\n你对风险的感知和普通人截然不同。大多数人恐惧不确定，而你在不确定中感到更加清醒和活跃。这让你成为危机中无价的资产，但也可能让你在平静时期因为缺乏刺激而做出鲁莽的决定。',
+    cognitive: '主导功能：外倾感觉（Se）— 极度敏锐地感知当下环境和机遇，实时响应\n辅助功能：内倾思维（Ti）— 快速逻辑分析，做出精准的即时判断\n第三功能：外倾情感（Fe）— 天然的社交魅力和影响他人情感的能力\n劣势功能：内倾直觉（Ni）— 对长远后果的预判较弱，容易忽视行动的深层影响',
+    strengths: ['极强行动力', '天然社交魅力', '危机处理能力', '谈判与说服', '务实直接', '对机遇的本能感知', '压力下的清醒'],
+    weaknesses: '对长远规划和抽象概念缺乏耐心；容易因为追求刺激做出高风险决策；情感上较为直接，有时忽略他人的敏感度；可能在建立深层关系上有困难；对批评的反应可能过于直接甚至咄咄逼人。',
+    careers: '创业者、销售总监、急救医生、警察特警、运动员、谈判专家、演员、股票交易员、危机公关专家',
     compatible: ['ISFJ', 'ISTJ', 'ESTP', 'ESFP'],
-    growth: '慢下来思考长远后果，冲劲是你的礼物，但方向同样重要。',
+    growth: '你活得比大多数人都更充分，但充分不等于深刻。试着在行动之后停下来，问一问：这件事的长期影响是什么？速度是你的礼物，但方向决定了礼物的价值。',
   },
   ESFP: {
     archetype: '表演者·娱乐家',
     tagline: 'THE ENTERTAINER · SPONTANEOUS PERFORMER',
     color: '#6a4a2c',
-    desc: '你是生命中的阳光，以无穷的活力和温暖感染每一个人。主导功能外倾感觉（Se）让你充分拥抱当下的每一刻；内倾情感（Fi）赋予你真诚的关怀和对美好事物的深切欣赏。',
-    cognitive: '主导功能：外倾感觉（Se）— 沉浸于当下体验，热爱感官世界\n辅助功能：内倾情感（Fi）— 真诚的情感和个人价值观\n第三功能：外倾思维（Te）— 在需要时展现实用的执行力\n劣势功能：内倾直觉（Ni）— 对抽象理论和长远规划不太感兴趣',
-    strengths: ['感染力与魅力', '热情活力', '灵活应变', '关怀他人', '审美品味'],
-    careers: '演员、音乐家、活动策划、销售、旅游、儿童教育',
+    population: '约 9%',
+    populationNote: '全球约9%，在表演艺术界比例最高',
+    celebrities: ['玛丽莲·梦露', '艾迪·墨菲', '马拉多纳', '利奥纳多·迪卡普里奥（部分）', '蕾哈娜', '华晨宇（部分特征）'],
+    desc: 'ESFP，「外倾感觉情感感知型」，是会让整个房间因为你的到来而亮起来的人。你不表演快乐，你就是快乐——你的热情是真实的，你的感染力是自然流淌的，你对当下这一刻的全情投入是你给世界最真实的礼物。\n\n你的主导功能外倾感觉（Se）让你活在一个色彩比别人更鲜艳、声音比别人更响亮的世界里。你不只是感知当下，你沉浸在当下——你知道今晚的音乐节奏对不对，知道现场的气氛少了什么，知道该在哪个瞬间制造惊喜。辅助功能内倾情感（Fi）让你的热情不只是表面的活力，而是有真实个人价值观支撑的真诚——你真的在乎，你真的喜欢，你的热情不是表演。\n\nESFP是团队中氧气的制造者。你能在沉重的气氛中找到轻盈的可能，能让悲伤的人重新记起笑的感觉，能把一个普通的聚会变成难忘的回忆。你的存在本身就是一种贡献。\n\n你活得如此充分，以至于有时候会忘记未来也是现实的一部分。你对当下的沉浸是礼物，但如果从不留意未来，当下的欢乐可能会在某一天给你留下需要应对的代价。',
+    cognitive: '主导功能：外倾感觉（Se）— 沉浸于当下体验，对美和感官世界有天然的热爱\n辅助功能：内倾情感（Fi）— 真诚的个人情感和价值观，让热情有根基\n第三功能：外倾思维（Te）— 在需要时能够展现务实的执行力\n劣势功能：内倾直觉（Ni）— 对抽象理论、长远规划和深层模式缺乏兴趣',
+    strengths: ['无与伦比的感染力', '热情与活力', '极强的适应力', '对他人的真诚关怀', '卓越的审美品味', '制造欢乐的天赋', '当下感知力'],
+    weaknesses: '对长期规划和抽象分析不感兴趣；可能在追求即时满足时忽略长远代价；对批评和冲突极度回避；容易在情绪高涨时做出冲动决定；有时难以在热情消退后维持承诺。',
+    careers: '演员、音乐表演者、活动策划师、旅游体验设计师、儿童教育者、销售顾问、美食评论家、主持人、社交媒体创作者',
     compatible: ['ISFJ', 'ISTJ', 'ESTP', 'ESFP'],
-    growth: '在享受当下的同时，为未来做一点点规划。你的热情若有了方向，将会创造惊人的成就。',
+    growth: '你把快乐带给了无数人，但快乐需要基础才能持久。试着在享受当下的同时，为未来留出一点点空间——不是要你变得沉重，只是让你的欢乐可以延续更久。',
   },
 };
 
@@ -1252,21 +1385,23 @@ function fillCard(q, index) {
   document.getElementById('q-number').textContent = `QUESTION ${String(index + 1).padStart(2, '0')}`;
   document.getElementById('q-text').textContent = q.text;
 
-  const saved = answers[index]; // 1-5 or undefined
-  const labels = ['非常符合', '比较符合', '中立', '不太符合', '完全不符合'];
+  const saved = answers[index];
+  const labels = ['非常符合', '比较\n符合', '中立', '不太\n符合', '完全\n不符合'];
 
   document.getElementById('likert-container').innerHTML = `
     <div class="likert-container">
-      <div class="likert-scale">
+      <div class="likert-strip">
         ${[1,2,3,4,5].map(v => `
-          <div class="likert-option">
-            <button class="likert-btn ${saved === v ? 'selected-'+v : ''}"
-              onclick="selectAnswer(${index}, ${v})"
-              title="${labels[v-1]}">
-            </button>
-            <div class="likert-label">${labels[v-1]}</div>
-          </div>
+          <button class="likert-cell ${saved === v ? 'sel-'+v : ''}"
+            onclick="selectAnswer(${index}, ${v})">
+            <div class="likert-dot"></div>
+            <div class="likert-cell-label">${labels[v-1]}</div>
+          </button>
         `).join('')}
+      </div>
+      <div class="likert-endpoints">
+        <span class="likert-ep">← 完全符合</span>
+        <span class="likert-ep">完全不符 →</span>
       </div>
     </div>
   `;
@@ -1275,12 +1410,10 @@ function fillCard(q, index) {
 function selectAnswer(index, value) {
   answers[index] = value;
 
-  // re-render options highlight
-  [1,2,3,4,5].forEach((v, i) => {
-    const btns = document.querySelectorAll('.likert-btn');
-    if (btns[i]) {
-      btns[i].className = 'likert-btn' + (v === value ? ' selected-'+v : '');
-    }
+  // re-render highlights on current strip
+  document.querySelectorAll('.likert-cell').forEach((cell, i) => {
+    const v = i + 1;
+    cell.className = 'likert-cell' + (v === value ? ' sel-'+v : '');
   });
 
   updateNavButtons();
@@ -1406,22 +1539,40 @@ function showResult(type, pcts) {
   document.getElementById('result-archetype').textContent = r.archetype;
   document.getElementById('result-tagline').textContent = r.tagline;
 
-  // Character illustration
+  // ── CHARACTER ILLUSTRATION with PNG slot ───────────────────
+  // PNG naming convention: place a file named e.g. "INTJ.png"
+  // in the same directory as this HTML file to use a custom image.
+  // The img element uses onerror to fall back to SVG if file not found.
+  const svgFallback = getCharacterSVG(type);
   document.getElementById('character-showcase').innerHTML = `
-    <div class="character-svg-wrap">${getCharacterSVG(type)}</div>
-    <div style="max-width:280px; text-align:left;">
-      <div class="eyebrow" style="margin-bottom:12px;">${r.tagline}</div>
-      <div style="font-family:'Cormorant Garamond',serif; font-size:32px; font-style:italic; color:var(--deep); margin-bottom:12px;">${r.archetype}</div>
-      <div style="font-size:14px; line-height:1.7; color:var(--mist);">
-        ${type[0]==='E' ? '外向 (E)' : '内向 (I)'} · 
-        ${type[1]==='S' ? '感觉 (S)' : '直觉 (N)'} · 
-        ${type[2]==='T' ? '思维 (T)' : '情感 (F)'} · 
+    <div class="character-img-wrap">
+      <img
+        src="${type}.png"
+        alt="${type} ${r.archetype}"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+      />
+      <div class="character-svg-wrap" style="display:none">${svgFallback}</div>
+      <div class="character-type-label">${type} · ${r.archetype.split('·')[0].trim()}</div>
+    </div>
+    <div class="character-info">
+      <div class="population-badge">
+        <div class="population-num">${r.population}</div>
+        <div class="population-text">全球人口占比<br>${r.populationNote}</div>
+      </div>
+      <div class="section-label" style="margin-bottom:8px;">CELEBRITIES · 同类型名人</div>
+      <div class="celeb-chips">
+        ${r.celebrities.map(c => `<div class="celeb-chip">${c}</div>`).join('')}
+      </div>
+      <div style="margin-top:16px; font-size:13px; line-height:1.7; color:var(--mist);">
+        ${type[0]==='E' ? '外向 (E)' : '内向 (I)'} ·
+        ${type[1]==='S' ? '感觉 (S)' : '直觉 (N)'} ·
+        ${type[2]==='T' ? '思维 (T)' : '情感 (F)'} ·
         ${type[3]==='J' ? '判断 (J)' : '感知 (P)'}
       </div>
     </div>
   `;
 
-  // Dimension bars
+  // ── DIMENSION BARS ─────────────────────────────────────────
   const dims = [
     { dim:'EI', left:'E', right:'I', pct: pcts['EI'] },
     { dim:'SN', left:'S', right:'N', pct: pcts['SN'] },
@@ -1431,7 +1582,6 @@ function showResult(type, pcts) {
 
   document.getElementById('dims-content').innerHTML = dims.map(d => {
     const pct = d.pct;
-    const dominant = pct >= 50 ? d.left : d.right;
     const pctDisplay = pct >= 50 ? pct : 100 - pct;
     return `
       <div class="dim-row">
@@ -1446,12 +1596,12 @@ function showResult(type, pcts) {
     `;
   }).join('');
 
-  // Result sections
+  // ── RESULT SECTIONS ────────────────────────────────────────
   document.getElementById('result-sections').innerHTML = `
     <div class="result-section">
       <div class="section-label">OVERVIEW · 人格概述</div>
       <div class="section-title">认识你自己</div>
-      <div class="section-body">${r.desc}</div>
+      <div class="section-body" style="white-space:pre-line">${r.desc}</div>
     </div>
     <div class="result-section">
       <div class="section-label">COGNITIVE FUNCTIONS · 荣格认知功能</div>
@@ -1466,8 +1616,13 @@ function showResult(type, pcts) {
       </div>
     </div>
     <div class="result-section">
+      <div class="section-label">WEAKNESSES · 成长盲区</div>
+      <div class="section-title">你需要留意的地方</div>
+      <div class="section-body">${r.weaknesses}</div>
+    </div>
+    <div class="result-section">
       <div class="section-label">CAREER · 职业倾向</div>
-      <div class="section-title">适合你的领域</div>
+      <div class="section-title">最适合你的领域</div>
       <div class="section-body">${r.careers}</div>
     </div>
     <div class="result-section">
