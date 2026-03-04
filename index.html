@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>荣格16型人格测试</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1410;
+    --parchment: #f5f0e8;
+    --gold: #c9a84c;
+    --gold-light: #e8d5a3;
+    --rust: #8b4513;
+    --deep: #2c1810;
+    --mist: #9b9080;
+    --cream: #faf7f0;
+    --shadow: rgba(26,20,16,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Serif SC', 'Cormorant Garamond', serif;
+    background: var(--parchment);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BACKGROUND TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(139,69,19,0.05) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ORNAMENTAL BORDERS */
+  .page-border {
+    position: fixed;
+    inset: 16px;
+    border: 1px solid rgba(201,168,76,0.3);
+    pointer-events: none;
+    z-index: 100;
+  }
+  .page-border::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 1px solid rgba(201,168,76,0.15);
+  }
+
+  /* CORNER ORNAMENTS */
+  .corner {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    z-index: 101;
+    opacity: 0.5;
+  }
+  .corner svg { width: 100%; height: 100%; }
+  .corner-tl { top: 10px; left: 10px; }
+  .corner-tr { top: 10px; right: 10px; transform: scaleX(-1); }
+  .corner-bl { bottom: 10px; left: 10px; transform: scaleY(-1); }
+  .corner-br { bottom: 10px; right: 10px; transform: scale(-1); }
+
+  /* SCREENS */
+  .screen {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .screen.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .screen.hidden { display: none; }
+
+  /* INTRO SCREEN */
+  .intro-mandala {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 32px;
+    animation: mandala-spin 30s linear infinite;
+    opacity: 0.7;
+  }
+  @keyframes mandala-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 400;
+    color: var(--deep);
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  .subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(14px, 2.5vw, 20px);
+    font-style: italic;
+    color: var(--mist);
+    text-align: center;
+    margin-bottom: 48px;
+    letter-spacing: 0.02em;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 40px;
+    width: 100%;
+    max-width: 400px;
+  }
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .divider-gem {
+    width: 8px;
+    height: 8px;
+    background: var(--gold);
+    transform: rotate(45deg);
+  }
+
+  .intro-text {
+    max-width: 560px;
+    text-align: center;
+    line-height: 1.9;
+    color: #4a3f35;
+    font-size: 15px;
+    margin-bottom: 48px;
+  }
+
+  .btn-primary {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--cream);
+    background: var(--deep);
+    border: none;
+    padding: 18px 48px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    background: linear-gradient(135deg, rgba(201,168,76,0.2), transparent);
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: opacity 0.3s;
+    opacity: 0;
+  }
+  .btn-primary:hover {
+    background: var(--rust);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(139,69,19,0.3);
+  }
+  .btn-primary:hover::before { opacity: 1; }
+
+  /* QUIZ SCREEN */
+  #quiz-screen {
+    padding: 80px 24px 100px;
+    justify-content: flex-start;
+  }
+
+  .progress-container {
+    width: 100%;
+    max-width: 700px;
+    margin-bottom: 48px;
+  }
+
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+  }
+
+  .progress-label {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+  }
+
+  .progress-count {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    color: var(--mist);
+  }
+  .progress-count span { color: var(--deep); font-weight: 600; }
+
+  .progress-bar-track {
+    height: 2px;
+    background: rgba(201,168,76,0.2);
+    position: relative;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--rust), var(--gold));
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+  .progress-bar-fill::after {
+    content: '';
+    position: absolute;
+    right: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--gold);
+  }
+
+  .question-wrapper {
+    width: 100%;
+    max-width: 700px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .question-card {
+    background: var(--cream);
+    border: 1px solid rgba(201,168,76,0.25);
+    padding: 48px;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+    box-shadow: 0 4px 40px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.8);
+  }
+  .question-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .question-number {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .question-number::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(201,168,76,0.4), transparent);
+  }
+
+  .question-text {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(16px, 2.5vw, 22px);
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--deep);
+    margin-bottom: 36px;
+    letter-spacing: 0.03em;
+  }
+
+  .options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 18px 24px;
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.2);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 14px;
+    color: #5a4f45;
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+  }
+  .option-btn::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0;
+    background: linear-gradient(90deg, rgba(201,168,76,0.1), transparent);
+    transition: width 0.3s ease;
+  }
+  .option-btn:hover::before { width: 100%; }
+  .option-btn:hover {
+    border-color: rgba(201,168,76,0.5);
+    color: var(--deep);
+    transform: translateX(4px);
+  }
+  .option-btn.selected {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, rgba(201,168,76,0.12), rgba(201,168,76,0.04));
+    color: var(--deep);
+  }
+  .option-btn.selected::before { width: 100%; }
+
+  .option-label {
+    min-width: 24px;
+    height: 24px;
+    border: 1px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.25s;
+  }
+  .option-btn.selected .option-label {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: white;
+  }
+
+  .nav-buttons {
+    display: flex;
+    gap: 16px;
+    margin-top: 32px;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 700px;
+  }
+
+  .btn-nav {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    border: 1px solid rgba(201,168,76,0.3);
+    background: transparent;
+    color: var(--mist);
+    cursor: pointer;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .btn-nav:hover:not(:disabled) {
+    border-color: var(--gold);
+    color: var(--deep);
+  }
+  .btn-nav:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .btn-submit {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 14px 40px;
+    background: var(--deep);
+    color: var(--cream);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+    display: none;
+  }
+  .btn-submit:hover {
+    background: var(--rust);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(139,69,19,0.3);
+  }
+  .btn-submit.visible { display: flex; align-items: center; gap: 10px; }
+
+  /* SLIDE ANIMATIONS */
+  .slide-out-left { animation: slideOutLeft 0.35s ease forwards; }
+  .slide-in-right { animation: slideInRight 0.35s ease forwards; }
+  .slide-out-right { animation: slideOutRight 0.35s ease forwards; }
+  .slide-in-left { animation: slideInLeft 0.35s ease forwards; }
+
+  @keyframes slideOutLeft {
+    to { transform: translateX(-60px); opacity: 0; }
+  }
+  @keyframes slideInRight {
+    from { transform: translateX(60px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes slideOutRight {
+    to { transform: translateX(60px); opacity: 0; }
+  }
+  @keyframes slideInLeft {
+    from { transform: translateX(-60px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  /* RESULT SCREEN */
+  #result-screen {
+    padding: 80px 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .result-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .result-type-badge {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(48px, 10vw, 96px);
+    font-weight: 600;
+    color: var(--deep);
+    letter-spacing: 0.15em;
+    line-height: 1;
+    margin-bottom: 16px;
+    position: relative;
+    display: inline-block;
+  }
+  .result-type-badge::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .result-archetype {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(20px, 4vw, 32px);
+    font-style: italic;
+    color: var(--rust);
+    margin-top: 24px;
+    margin-bottom: 8px;
+  }
+
+  .result-tagline {
+    font-size: 14px;
+    color: var(--mist);
+    letter-spacing: 0.15em;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+  }
+
+  .dimension-bars {
+    background: var(--cream);
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 40px;
+    margin-bottom: 40px;
+    box-shadow: 0 2px 20px var(--shadow);
+  }
+
+  .dimension-title {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    margin-bottom: 28px;
+    text-align: center;
+  }
+
+  .dim-row {
+    display: grid;
+    grid-template-columns: 60px 1fr 60px;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .dim-label {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--deep);
+    font-weight: 600;
+  }
+  .dim-label.right { text-align: right; }
+  .dim-label.dim { color: var(--mist); font-weight: 400; }
+
+  .dim-bar-track {
+    height: 8px;
+    background: rgba(201,168,76,0.15);
+    position: relative;
+    border-radius: 0;
+  }
+  .dim-bar-fill {
+    height: 100%;
+    position: absolute;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(90deg, var(--gold), var(--rust));
+  }
+  .dim-pct {
+    position: absolute;
+    top: -20px;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    color: var(--rust);
+    transition: left 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateX(-50%);
+  }
+
+  .result-sections {
+    display: grid;
+    gap: 24px;
+  }
+
+  .result-section {
+    background: var(--cream);
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 36px 40px;
+    box-shadow: 0 2px 20px var(--shadow);
+    position: relative;
+  }
+  .result-section::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--gold), var(--rust));
+  }
+
+  .section-label {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    color: var(--deep);
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+
+  .section-body {
+    font-size: 15px;
+    line-height: 1.85;
+    color: #4a3f35;
+  }
+
+  .traits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .trait-tag {
+    padding: 10px 16px;
+    border: 1px solid rgba(201,168,76,0.3);
+    text-align: center;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--deep);
+    background: rgba(201,168,76,0.05);
+  }
+
+  .compatible-types {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .type-pill {
+    padding: 8px 20px;
+    border: 1px solid var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--rust);
+    letter-spacing: 0.1em;
+  }
+
+  .btn-restart {
+    margin-top: 48px;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 16px 48px;
+    background: transparent;
+    color: var(--deep);
+    border: 1px solid rgba(201,168,76,0.4);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-restart:hover {
+    background: var(--deep);
+    color: var(--cream);
+    border-color: var(--deep);
+  }
+
+  /* LOADING */
+  .loading-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--parchment);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.8s ease;
+  }
+  .loading-screen.fade-out { opacity: 0; pointer-events: none; }
+
+  .hourglass {
+    width: 48px;
+    height: 48px;
+    animation: hourglass-flip 2s ease-in-out infinite;
+    margin-bottom: 24px;
+    opacity: 0.5;
+  }
+  @keyframes hourglass-flip {
+    0%, 40% { transform: rotate(0deg); }
+    50%, 90% { transform: rotate(180deg); }
+    100% { transform: rotate(180deg); }
+  }
+
+  .loading-text {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--mist);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .question-card { padding: 28px 20px; }
+    .dim-row { grid-template-columns: 40px 1fr 40px; }
+    .result-section { padding: 24px 20px; }
+    .dimension-bars { padding: 24px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- DECORATIVE BORDERS -->
+<div class="page-border"></div>
+<div class="corner corner-tl">
+  <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 4 L4 30 M4 4 L30 4" stroke="#c9a84c" stroke-width="1"/>
+    <path d="M4 4 L20 20" stroke="#c9a84c" stroke-width="0.5"/>
+    <circle cx="4" cy="4" r="3" stroke="#c9a84c" stroke-width="1"/>
+    <path d="M12 4 L12 12 L4 12" stroke="#c9a84c" stroke-width="0.5" fill="none"/>
+  </svg>
+</div>
+<div class="corner corner-tr">
+  <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 4 L4 30 M4 4 L30 4" stroke="#c9a84c" stroke-width="1"/>
+    <path d="M4 4 L20 20" stroke="#c9a84c" stroke-width="0.5"/>
+    <circle cx="4" cy="4" r="3" stroke="#c9a84c" stroke-width="1"/>
+    <path d="M12 4 L12 12 L4 12" stroke="#c9a84c" stroke-width="0.5" fill="none"/>
+  </svg>
+</div>
+<div class="corner corner-bl">
+  <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 4 L4 30 M4 4 L30 4" stroke="#c9a84c" stroke-width="1"/>
+    <path d="M4 4 L20 20" stroke="#c9a84c" stroke-width="0.5"/>
+    <circle cx="4" cy="4" r="3" stroke="#c9a84c" stroke-width="1"/>
+    <path d="M12 4 L12 12 L4 12" stroke="#c9a84c" stroke-width="0.5" fill="none"/>
+  </svg>
+</div>
+<div class="corner corner-br">
+  <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 4 L4 30 M4 4 L30 4" stroke="#c9a84c" stroke-width="1"/>
+    <path d="M4 4 L20 20" stroke="#c9a84c" stroke-width="0.5"/>
+    <circle cx="4" cy="4" r="3" stroke="#c9a84c" stroke-width="1"/>
+    <path d="M12 4 L12 12 L4 12" stroke="#c9a84c" stroke-width="0.5" fill="none"/>
+  </svg>
+</div>
+
+<!-- LOADING -->
+<div class="loading-screen" id="loading">
+  <svg class="hourglass" viewBox="0 0 48 48" fill="none">
+    <path d="M12 6h24M12 42h24M14 6C14 16 24 20 24 24C24 28 14 32 14 42M34 6C34 16 24 20 24 24C24 28 34 32 34 42" stroke="#c9a84c" stroke-width="1.5"/>
+    <circle cx="24" cy="26" r="3" fill="#c9a84c" opacity="0.6"/>
+  </svg>
+  <div class="loading-text">正在准备测试 · · ·</div>
+</div>
+
+<!-- INTRO SCREEN -->
+<div class="screen hidden" id="intro-screen">
+  <svg class="intro-mandala" viewBox="0 0 120 120" fill="none">
+    <circle cx="60" cy="60" r="55" stroke="#c9a84c" stroke-width="0.5" stroke-dasharray="4 4"/>
+    <circle cx="60" cy="60" r="40" stroke="#c9a84c" stroke-width="0.5"/>
+    <circle cx="60" cy="60" r="25" stroke="#c9a84c" stroke-width="1"/>
+    <circle cx="60" cy="60" r="8" fill="#c9a84c" opacity="0.3"/>
+    <path d="M60 5 L60 115 M5 60 L115 60" stroke="#c9a84c" stroke-width="0.3"/>
+    <path d="M60 5 L100 95 L15 38 L105 38 L20 95 Z" stroke="#c9a84c" stroke-width="0.4" fill="none"/>
+    <path d="M60 20 L74 55 L110 55 L82 76 L92 110 L60 88 L28 110 L38 76 L10 55 L46 55 Z" stroke="#c9a84c" stroke-width="0.3" fill="none" opacity="0.5"/>
+  </svg>
+
+  <div class="eyebrow">基于荣格心理学理论</div>
+  <h1>十六型人格</h1>
+  <div class="subtitle">探索你灵魂最深处的认知密码</div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-gem"></div>
+    <div class="divider-line"></div>
+  </div>
+
+  <p class="intro-text">
+    卡尔·荣格提出，人类的心理功能可分为四对相对的维度——
+    <br>内向与外向、直觉与感觉、思维与情感、判断与感知。
+    <br><br>
+    本测试包含 <strong>60</strong> 道精心设计的题目，将通过你对真实情境的直觉反应，
+    揭示你的认知类型与心理原型，帮助你更深刻地理解自我。
+    <br><br>
+    <em>请依据第一直觉作答，无需过度思量。</em>
+  </p>
+
+  <button class="btn-primary" onclick="startTest()">开始探索</button>
+</div>
+
+<!-- QUIZ SCREEN -->
+<div class="screen hidden" id="quiz-screen">
+  <div class="progress-container">
+    <div class="progress-meta">
+      <div class="progress-label">测试进度</div>
+      <div class="progress-count"><span id="current-q">1</span> / 60</div>
+    </div>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="question-wrapper">
+    <div class="question-card" id="question-card">
+      <div class="question-number" id="q-number">QUESTION 01</div>
+      <div class="question-text" id="q-text"></div>
+      <div class="options-grid" id="options-container"></div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-nav" id="btn-prev" onclick="navigate(-1)" disabled>
+      ← 上一题
+    </button>
+    <button class="btn-nav" id="btn-next" onclick="navigate(1)">
+      下一题 →
+    </button>
+    <button class="btn-submit" id="btn-submit" onclick="submitTest()">
+      查看结果 ✦
+    </button>
+  </div>
+</div>
+
+<!-- RESULT SCREEN -->
+<div class="screen hidden" id="result-screen">
+  <div class="result-header">
+    <div class="eyebrow">你的人格类型</div>
+    <div class="result-type-badge" id="result-type"></div>
+    <div class="result-archetype" id="result-archetype"></div>
+    <div class="result-tagline" id="result-tagline"></div>
+  </div>
+
+  <div class="dimension-bars" id="dimension-bars">
+    <div class="dimension-title">认知维度分析</div>
+    <div id="dims-content"></div>
+  </div>
+
+  <div class="result-sections" id="result-sections"></div>
+
+  <div style="text-align:center">
+    <button class="btn-restart" onclick="restartTest()">重新测试</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// QUESTION BANK — 60 questions, 4 dimensions × 15 questions
+// dim: EI, SN, TF, JP
+// score: A=first pole (E,S,T,J), B=second pole (I,N,F,P)
+// ============================================================
+const RAW_QUESTIONS = [
+  // E vs I (15)
+  { dim:'EI', text:'在一个热闹的派对结束后，你通常感到', a:'充满活力，意犹未尽', b:'精疲力竭，渴望独处' },
+  { dim:'EI', text:'当你需要解决一个复杂问题时，你更倾向于', a:'与他人讨论，通过对话理清思路', b:'独自思考，在安静中找到答案' },
+  { dim:'EI', text:'在一个陌生的社交场合，你通常会', a:'主动介绍自己，广泛结交新朋友', b:'等待他人搭话，与少数人深入交流' },
+  { dim:'EI', text:'你通常如何恢复精力？', a:'参加社交活动，与朋友相聚', b:'独处，享受安静的时光' },
+  { dim:'EI', text:'在工作或学习时，你更喜欢', a:'开放的环境，可以与他人互动', b:'安静的独立空间，不受打扰' },
+  { dim:'EI', text:'对于周末计划，你更倾向于', a:'安排丰富的社交活动和外出', b:'留在家中休息或独自进行爱好' },
+  { dim:'EI', text:'你的朋友圈通常是', a:'广泛的，认识很多人', b:'精选的，有少数几个亲密好友' },
+  { dim:'EI', text:'你在表达想法时更常', a:'先说出来再思考，在表达中完善', b:'先在脑中整理成熟再开口' },
+  { dim:'EI', text:'如果一周内没有社交活动，你会感到', a:'无聊，甚至有些焦虑', b:'如释重负，享受这段宁静' },
+  { dim:'EI', text:'在集体讨论中，你通常', a:'积极发言，主导话题走向', b:'倾听为主，只在有把握时发言' },
+  { dim:'EI', text:'你更倾向于通过哪种方式建立关系？', a:'频繁接触、广泛互动', b:'深度交流、共同体验' },
+  { dim:'EI', text:'在需要做决定时，你更希望', a:'与别人头脑风暴后决定', b:'独自深思熟虑后决定' },
+  { dim:'EI', text:'对你而言，理想的假期是', a:'与朋友或家人一起出游', b:'独自旅行或在家享受宁静' },
+  { dim:'EI', text:'你通常被他人描述为', a:'外向、健谈、充满活力', b:'内敛、沉稳、善于倾听' },
+  { dim:'EI', text:'当你感到压力很大时，你的应对方式更倾向于', a:'找朋友倾诉，寻求外部支持', b:'需要独处空间，自我消化' },
+
+  // S vs N (15)
+  { dim:'SN', text:'在理解一个新概念时，你更倾向于', a:'从具体的例子和实际应用出发', b:'先理解整体框架和抽象原理' },
+  { dim:'SN', text:'你更信任', a:'亲身经历和有据可查的事实', b:'直觉和隐约感受到的模式' },
+  { dim:'SN', text:'在阅读一本书时，你更注意', a:'具体的情节细节和准确的描述', b:'作品传达的象征意义和深层主题' },
+  { dim:'SN', text:'解决问题时，你更倾向于', a:'遵循行之有效的方法和步骤', b:'探索新颖、不寻常的解决方案' },
+  { dim:'SN', text:'你对未来的思考更多关注', a:'现实的、可预期的计划和步骤', b:'无限的可能性和令人兴奋的愿景' },
+  { dim:'SN', text:'日常对话中，你更喜欢聊', a:'真实发生的事件、日常生活细节', b:'想法、理论、假设性问题' },
+  { dim:'SN', text:'在学习新技能时，你倾向于', a:'按步骤练习，打好基础再进阶', b:'先了解全貌，再回头填补细节' },
+  { dim:'SN', text:'你更欣赏哪种风格的写作？', a:'清晰、具体、言之有物的文字', b:'富有想象力、充满隐喻和意象的文字' },
+  { dim:'SN', text:'当别人向你描述方向时，你更希望', a:'明确的地标和逐步的路线说明', b:'大致方向和整体地图就够了' },
+  { dim:'SN', text:'你通常被描述为一个注重', a:'实际的人，脚踏实地', b:'创意的人，充满想象力' },
+  { dim:'SN', text:'对于规律性的工作，你的态度是', a:'熟悉产生效率，乐于重复', b:'容易感到无聊，渴望变化' },
+  { dim:'SN', text:'你会如何形容自己对细节的态度？', a:'非常在意细节，注重精确性', b:'重视大局，细节有时会被忽略' },
+  { dim:'SN', text:'在艺术领域，你更欣赏', a:'写实主义，如实还原真实场景', b:'抽象或超现实主义，表达内在感受' },
+  { dim:'SN', text:'如果有一份工作要求大量的创意和理论思考，你会感到', a:'这不是我的强项，我更擅长落地执行', b:'这正是我所热爱和擅长的' },
+  { dim:'SN', text:'在做计划时，你更关注', a:'当下能做的具体步骤', b:'长远的目标和宏观愿景' },
+
+  // T vs F (15)
+  { dim:'TF', text:'在做重要决定时，你更依赖', a:'逻辑分析和客观数据', b:'个人价值观和对他人感受的考量' },
+  { dim:'TF', text:'当朋友向你倾诉困扰时，你更倾向于', a:'帮助分析问题，提出解决方案', b:'首先表达同情和理解，给予情感支持' },
+  { dim:'TF', text:'对于批评，你认为最重要的是', a:'批评是否准确，是否有依据', b:'批评的方式是否体贴，是否考虑到感受' },
+  { dim:'TF', text:'你更重视一个人的', a:'能力、智识和逻辑思维', b:'善良、同理心和真诚' },
+  { dim:'TF', text:'在团队中，你更倾向于做', a:'指出问题，追求最优解，即使引发冲突', b:'维护团队和谐，照顾每个人的感受' },
+  { dim:'TF', text:'当你观察一个情况时，你首先注意到的是', a:'其中的逻辑漏洞和不一致之处', b:'涉及其中的人的情感状态' },
+  { dim:'TF', text:'你在做决定时更担心', a:'做出了不合理的决定', b:'伤害了他人的感情' },
+  { dim:'TF', text:'你的朋友更可能向你寻求', a:'客观的分析和务实的建议', b:'情感上的支持和共情' },
+  { dim:'TF', text:'对于"公平"，你的理解更接近', a:'每个人依据相同的规则受到同等对待', b:'每个人根据自己的需求得到应有的关怀' },
+  { dim:'TF', text:'当讨论一个有争议的话题时，你更在意', a:'争论的逻辑是否站得住脚', b:'这个话题对相关人员的影响' },
+  { dim:'TF', text:'在评价一部电影或书籍时，你更关注', a:'情节结构是否合理，逻辑是否自洽', b:'人物情感是否真实，是否令你产生共鸣' },
+  { dim:'TF', text:'你认为一个好的领导者应该', a:'做出最有利于整体目标的决定，无论是否讨好', b:'关心团队成员的感受，营造积极的情感环境' },
+  { dim:'TF', text:'当被要求给出反馈时，你更倾向于', a:'直接、诚实地指出不足，即使可能令对方不快', b:'用温和的方式表达，注重保护对方的自尊' },
+  { dim:'TF', text:'你通常更被哪类问题吸引？', a:'需要推理和分析的智识挑战', b:'涉及人际关系和情感动态的问题' },
+  { dim:'TF', text:'如果你的朋友犯了错，你会', a:'坦率地指出错误，帮助他改正', b:'先确保他情绪稳定，再温和地提出建议' },
+
+  // J vs P (15)
+  { dim:'JP', text:'对于生活中的计划，你更倾向于', a:'制定详细计划并严格执行', b:'保持灵活，随时调整' },
+  { dim:'JP', text:'你的工作桌或生活空间通常', a:'整洁有序，有固定的摆放方式', b:'随意散落，但你知道东西在哪里' },
+  { dim:'JP', text:'当截止日期临近时，你通常', a:'早已完成，按计划收尾', b:'在压力下爆发，最后时刻完成' },
+  { dim:'JP', text:'在旅行时，你更喜欢', a:'事先安排好行程，预订好一切', b:'随机应变，随兴而至' },
+  { dim:'JP', text:'对于"选择"，你的感受更接近', a:'选择完毕令我如释重负，可以专注执行了', b:'过早确定令我焦虑，我更享受开放的可能性' },
+  { dim:'JP', text:'你对规则和程序的态度是', a:'规则是必要的，能带来秩序和效率', b:'规则应视情况而定，有时候变通更明智' },
+  { dim:'JP', text:'对于杂乱或未完成的任务，你', a:'感到不安，迫切想整理清楚', b:'可以接受，等有灵感或必要时再处理' },
+  { dim:'JP', text:'你更喜欢哪种工作方式？', a:'按照既定计划逐步推进', b:'多线并行，灵活切换，顺势而为' },
+  { dim:'JP', text:'你如何看待突发变化？', a:'令人不安，会打乱我的节奏', b:'令人兴奋，是新机会的开始' },
+  { dim:'JP', text:'你是哪种类型的购物者？', a:'列好清单，按计划购买，尽量不偏离', b:'逛到哪算哪，看到喜欢的就买' },
+  { dim:'JP', text:'在一个项目开始之前，你倾向于', a:'制定周详的计划，然后执行', b:'边做边想，在行动中找到方向' },
+  { dim:'JP', text:'你更认同哪句话？', a:'"没有计划，就是计划失败"', b:'"保持弹性，才能抓住机会"' },
+  { dim:'JP', text:'当你有多个选项时，你会', a:'尽快做决定，避免悬而未决', b:'倾向于先搜集更多信息，延迟决定' },
+  { dim:'JP', text:'你更享受哪个阶段？', a:'项目完成、尘埃落定的那一刻', b:'探索和研究阶段，充满可能性' },
+  { dim:'JP', text:'对于"准时"，你的态度是', a:'守时是基本礼貌，我几乎总是提前到达', b:'大概准时就好，差一点点无所谓' },
+];
+
+// ============================================================
+// RESULT DATABASE
+// ============================================================
+const RESULTS = {
+  INTJ: {
+    archetype: '战略家·建筑师',
+    tagline: 'THE ARCHITECT · STRATEGIC VISION',
+    desc: '你拥有卓越的分析能力和独立精神，是那种能够在混沌中看见秩序的人。荣格称这种类型为「内倾直觉思维判断型」——你的主导认知功能是内倾直觉（Ni），以惊人的洞察力预见模式和趋势，辅助功能是外倾思维（Te），将这些洞见转化为精密的战略。',
+    cognitive: '主导功能：内倾直觉（Ni）— 无意识地整合信息，形成长远预见\n辅助功能：外倾思维（Te）— 系统化地组织外部世界\n第三功能：内倾情感（Fi）— 内化的价值观，鲜少示人\n劣势功能：外倾感觉（Se）— 对当下细节有时忽略',
+    strengths: ['战略性长远思维', '独立自主', '意志坚定', '持续自我完善', '洞见深刻'],
+    careers: '科学研究、战略咨询、软件架构、学术研究、独立创业',
+    compatible: ['ENFP', 'ENTP', 'INFJ', 'INTJ'],
+    growth: '尝试向他人敞开心扉，情感表达并非弱点，而是另一种智识。练习活在当下，欣赏过程而非只关注结果。',
+  },
+  INTP: {
+    archetype: '逻辑学家·思想家',
+    tagline: 'THE LOGICIAN · PURE REASONING',
+    desc: '你是天生的哲学家和问题解决者，拥有对真理孜孜不倦的追求。荣格理论中，你的主导功能是内倾思维（Ti），以精密的内部逻辑框架分析一切，追求对系统的深刻理解。外倾直觉（Ne）则让你同时看见无数个可能性和关联。',
+    cognitive: '主导功能：内倾思维（Ti）— 构建精密的内部逻辑体系\n辅助功能：外倾直觉（Ne）— 探索无限可能性与跨领域关联\n第三功能：内倾感觉（Si）— 参照过去的经验和模式\n劣势功能：外倾情感（Fe）— 处理人际情感时常感不适',
+    strengths: ['深度分析能力', '创造性思维', '客观公正', '思维开放', '理论建构'],
+    careers: '哲学、数学、编程、物理、经济学、系统分析',
+    compatible: ['ENTJ', 'ESTJ', 'INFJ', 'ENFJ'],
+    growth: '将你的理论付诸实践，完成比完美更重要。留意你身边人的情感需求，主动练习表达温暖。',
+  },
+  ENTJ: {
+    archetype: '指挥官·统帅',
+    tagline: 'THE COMMANDER · NATURAL LEADER',
+    desc: '你天生具备领导气质，能够迅速把握局势并组织资源达成目标。荣格理论中，你的主导功能是外倾思维（Te），以高效、系统的方式组织外部世界；内倾直觉（Ni）则赋予你洞察长远趋势的战略眼光。你是执行力与远见的罕见结合。',
+    cognitive: '主导功能：外倾思维（Te）— 高效组织系统和人员以实现目标\n辅助功能：内倾直觉（Ni）— 洞察深层模式，预见未来\n第三功能：外倾感觉（Se）— 对当下机会的感知\n劣势功能：内倾情感（Fi）— 对自身内心深处的价值观把握较少',
+    strengths: ['天然领导力', '战略远见', '决断力', '高效执行', '激励他人'],
+    careers: '企业管理、法律、投资银行、政治、创业、军事指挥',
+    compatible: ['INTP', 'INFP', 'ENTP', 'ENTJ'],
+    growth: '学会放慢脚步，倾听他人的情感。效率固然重要，但人心不是机器，关系需要温度。',
+  },
+  ENTP: {
+    archetype: '辩论家·创新者',
+    tagline: 'THE DEBATER · INTELLECTUAL CHALLENGER',
+    desc: '你热爱思想的碰撞，以挑战一切为乐，永远在寻找下一个令人兴奋的想法。荣格理论中，你的主导功能是外倾直觉（Ne），让你以惊人的速度发现新模式和可能性；内倾思维（Ti）则帮你构建严密的逻辑来检验这些想法。',
+    cognitive: '主导功能：外倾直觉（Ne）— 快速发现跨领域模式与可能性\n辅助功能：内倾思维（Ti）— 用精密逻辑检验和构建想法\n第三功能：外倾情感（Fe）— 感知社交氛围的能力\n劣势功能：内倾感觉（Si）— 对常规和细节执行常感厌倦',
+    strengths: ['快速思维', '创新能力', '辩论技巧', '适应力', '魅力与口才'],
+    careers: '创业、律师、创意策划、科技产品、教育、新闻评论',
+    compatible: ['INFJ', 'INTJ', 'ENFJ', 'ENTJ'],
+    growth: '将你层出不穷的想法落地执行，坚持完成一件事，比提出十个想法更有意义。',
+  },
+  INFJ: {
+    archetype: '提倡者·先知',
+    tagline: 'THE ADVOCATE · VISIONARY IDEALIST',
+    desc: '你是最稀有的人格类型之一，拥有惊人的洞察力和强烈的利他主义情怀。荣格理论中，你的主导功能是内倾直觉（Ni），让你能够深刻感知他人和情境中隐藏的模式；外倾情感（Fe）则驱使你将这份洞见服务于他人与社会。',
+    cognitive: '主导功能：内倾直觉（Ni）— 潜意识整合信息，形成深刻洞见\n辅助功能：外倾情感（Fe）— 感知集体情感，促进和谐\n第三功能：内倾思维（Ti）— 内部逻辑的校验\n劣势功能：外倾感觉（Se）— 有时与外部物质世界脱节',
+    strengths: ['深刻洞察力', '强烈同理心', '坚定的价值观', '创意与远见', '激励他人'],
+    careers: '心理咨询、作家、社会工作、教育、医疗、宗教与哲学',
+    compatible: ['ENTP', 'ENFP', 'INTJ', 'INFJ'],
+    growth: '你常常将他人置于自己之上，学会照顾自己的需求同样是一种美德。设定健康的边界，才能持续地给予。',
+  },
+  INFP: {
+    archetype: '调停者·诗人',
+    tagline: 'THE MEDIATOR · IDEALISTIC DREAMER',
+    desc: '你拥有丰富的内心世界和对美与意义的深切追求，是真正的理想主义者。荣格理论中，你的主导功能是内倾情感（Fi），深刻的个人价值观是你一切行动的罗盘；外倾直觉（Ne）则带给你无穷的创意和对可能性的想象。',
+    cognitive: '主导功能：内倾情感（Fi）— 深层个人价值观，真实性至上\n辅助功能：外倾直觉（Ne）— 探索想象的可能性\n第三功能：内倾感觉（Si）— 保留有意义的记忆和传统\n劣势功能：外倾思维（Te）— 对规则和效率系统感到疲惫',
+    strengths: ['创造力', '同理心', '开放包容', '深刻的价值观', '热情与奉献'],
+    careers: '作家、诗人、艺术家、心理咨询师、教育者、非营利机构工作',
+    compatible: ['ENFJ', 'ENTJ', 'INFJ', 'INFP'],
+    growth: '将你内心世界的美丽带到现实中，完成作品比构想完美更重要。也请注意，理想的人和关系往往需要经历现实的磨砺才能成长。',
+  },
+  ENFJ: {
+    archetype: '主人公·教导者',
+    tagline: 'THE PROTAGONIST · CHARISMATIC GUIDE',
+    desc: '你是天生的领袖，以温暖和感召力激励身边的每一个人。荣格理论中，你的主导功能是外倾情感（Fe），让你对集体的情感需求高度敏感，并本能地促进和谐；内倾直觉（Ni）赋予你看穿事物本质的远见。',
+    cognitive: '主导功能：外倾情感（Fe）— 感知并回应集体情感，营造和谐\n辅助功能：内倾直觉（Ni）— 洞察人和情境的深层模式\n第三功能：外倾感觉（Se）— 对当下环境的觉察\n劣势功能：内倾思维（Ti）— 有时在严密逻辑分析上不够深入',
+    strengths: ['天然感召力', '同理心', '组织能力', '利他主义', '沟通艺术'],
+    careers: '教师、教练、人力资源、政治家、公关、社会活动家',
+    compatible: ['INFP', 'ISFP', 'INTJ', 'INTP'],
+    growth: '你习惯照顾所有人，但别忘了自己的需求。学会说"不"，是对自己最重要的关怀。',
+  },
+  ENFP: {
+    archetype: '竞选者·激励者',
+    tagline: 'THE CAMPAIGNER · FREE SPIRIT',
+    desc: '你充满热情和创意，把生活当作无限可能的画布来探索。荣格理论中，你的主导功能是外倾直觉（Ne），让你以惊人的速度发现新想法和关联；内倾情感（Fi）赋予你深刻的个人价值观和真实性，让你的热情有意义。',
+    cognitive: '主导功能：外倾直觉（Ne）— 看见无处不在的可能性和关联\n辅助功能：内倾情感（Fi）— 深层价值观驱动真实的热情\n第三功能：外倾思维（Te）— 将想法付诸实际执行\n劣势功能：内倾感觉（Si）— 对常规、细节和历史数据不感兴趣',
+    strengths: ['感染力', '创造力', '同理心', '沟通能力', '热情与好奇心'],
+    careers: '创意产业、记者、演员、教练、营销、人道主义工作',
+    compatible: ['INTJ', 'INFJ', 'ENFJ', 'ENTJ'],
+    growth: '你的热情是礼物，但频繁跳跃会耗散你的能量。学会深挖一件事，坚持到见到果实。',
+  },
+  ISTJ: {
+    archetype: '检察员·监督者',
+    tagline: 'THE LOGISTICIAN · RELIABLE GUARDIAN',
+    desc: '你是可靠性和责任感的代名词，在任何组织中都是不可或缺的支柱。荣格理论中，你的主导功能是内倾感觉（Si），让你积累丰富的经验和数据，以此建立稳固的判断；外倾思维（Te）则让你高效地执行和管理。',
+    cognitive: '主导功能：内倾感觉（Si）— 以丰富的过去经验作为决策基础\n辅助功能：外倾思维（Te）— 系统、高效地管理现实任务\n第三功能：内倾情感（Fi）— 坚守个人价值观，鲜少外露\n劣势功能：外倾直觉（Ne）— 面对全新情况时可能感到不适',
+    strengths: ['高度可靠', '条理分明', '责任心强', '耐心细心', '坚持不懈'],
+    careers: '会计、审计、法律、行政、军队、工程、数据库管理',
+    compatible: ['ESFP', 'ESTP', 'ISFJ', 'ISTJ'],
+    growth: '世界在变化，保持开放对新方法和新想法同样重要。尝试偶尔打破常规，你可能会发现意外的惊喜。',
+  },
+  ISFJ: {
+    archetype: '守卫者·保护者',
+    tagline: 'THE DEFENDER · WARM PROTECTOR',
+    desc: '你是无私奉献的守护者，以细腻的关怀为所爱之人构建安全感。荣格理论中，你的主导功能是内倾感觉（Si），以惊人的记忆力保留每一个重要的细节和经历；外倾情感（Fe）则驱使你将这份关怀转化为对他人实质性的支持。',
+    cognitive: '主导功能：内倾感觉（Si）— 细腻的感知力与丰富的细节记忆\n辅助功能：外倾情感（Fe）— 本能地照顾他人情感需求\n第三功能：内倾思维（Ti）— 内部逻辑分析\n劣势功能：外倾直觉（Ne）— 对大胆变化有时感到担忧',
+    strengths: ['温暖关怀', '可靠忠诚', '注重细节', '耐心体贴', '服务精神'],
+    careers: '护士、教师、社工、行政、图书管理员、客户服务',
+    compatible: ['ESFP', 'ESTP', 'ISFJ', 'ISTJ'],
+    growth: '你习惯了给予，却不善于接受。学会表达自己的需求，让别人也有机会关心你。',
+  },
+  ESTJ: {
+    archetype: '总经理·管理者',
+    tagline: 'THE EXECUTIVE · ORDER AND TRADITION',
+    desc: '你是秩序和效率的捍卫者，以无可挑剔的组织能力管理事务和人员。荣格理论中，你的主导功能是外倾思维（Te），以系统、客观的方式组织外部世界；内倾感觉（Si）则为你的决策提供丰富的经验和传统作为支撑。',
+    cognitive: '主导功能：外倾思维（Te）— 高效组织和管理外部系统\n辅助功能：内倾感觉（Si）— 以传统和经验作为可靠的参照\n第三功能：外倾直觉（Ne）— 对新可能性有一定感知\n劣势功能：内倾情感（Fi）— 对个人内心情感的处理较少',
+    strengths: ['强大执行力', '组织能力', '忠于职责', '可靠稳定', '直接坦率'],
+    careers: '企业管理、军队、法律、金融、行政、项目管理',
+    compatible: ['ISFP', 'ISTP', 'ESFJ', 'ESTJ'],
+    growth: '尝试理解规则背后的情感，有时候一个人的感受比效率更重要。灵活性也是一种领导力。',
+  },
+  ESFJ: {
+    archetype: '执政官·照料者',
+    tagline: 'THE CONSUL · COMMUNITY BUILDER',
+    desc: '你是天生的社交能手，以无尽的热情和关怀维系着你的人际网络。荣格理论中，你的主导功能是外倾情感（Fe），让你本能地感知集体需求并采取行动；内倾感觉（Si）则赋予你对传统和惯例的深厚尊重。',
+    cognitive: '主导功能：外倾情感（Fe）— 感知集体情感，维系社交和谐\n辅助功能：内倾感觉（Si）— 尊重传统，以经验为依据\n第三功能：外倾直觉（Ne）— 对新情境有一定的开放性\n劣势功能：内倾思维（Ti）— 对纯粹逻辑分析有时感到不适',
+    strengths: ['温暖热情', '忠诚可靠', '组织社交活动', '关爱他人', '合作精神'],
+    careers: '医疗、教育、人力资源、社区工作、销售、活动策划',
+    compatible: ['ISFP', 'ISTP', 'ESFJ', 'ESTJ'],
+    growth: '你非常在意他人的评价，这可能成为一种束缚。培养内在的自我认同，让你的价值不依赖于外界认可。',
+  },
+  ISTP: {
+    archetype: '鉴赏家·工匠',
+    tagline: 'THE VIRTUOSO · MASTERFUL CRAFTSMAN',
+    desc: '你是天生的工匠，以冷静的头脑和灵巧的双手掌握一切机械与系统。荣格理论中，你的主导功能是内倾思维（Ti），构建精密的内部逻辑框架以理解系统运作；外倾感觉（Se）则让你对当下的物理世界保持高度敏锐的感知。',
+    cognitive: '主导功能：内倾思维（Ti）— 分析系统内在逻辑，追求精确理解\n辅助功能：外倾感觉（Se）— 对当下物理世界的敏锐感知\n第三功能：内倾直觉（Ni）— 偶尔的深层洞察\n劣势功能：外倾情感（Fe）— 对他人情感和社交礼仪不够敏感',
+    strengths: ['动手能力', '冷静理性', '危机处理', '灵活应变', '独立自主'],
+    careers: '工程师、飞行员、外科医生、程序员、机械师、消防员',
+    compatible: ['ESTJ', 'ESFJ', 'ISTP', 'ISTJ'],
+    growth: '尝试表达你的情感，让身边的人知道你的感受。长期的情感压抑可能以意想不到的方式爆发。',
+  },
+  ISFP: {
+    archetype: '探险家·艺术家',
+    tagline: 'THE ADVENTURER · SPONTANEOUS ARTIST',
+    desc: '你是安静的艺术家，以细腻的感受力体验和创造世界的美丽。荣格理论中，你的主导功能是内倾情感（Fi），深刻的个人价值观让你对真实和美有着本能的追求；外倾感觉（Se）则让你活在当下，以感官充分体验生命。',
+    cognitive: '主导功能：内倾情感（Fi）— 深层个人价值观，高度真实性\n辅助功能：外倾感觉（Se）— 沉浸于当下的感官体验\n第三功能：内倾直觉（Ni）— 偶尔的深层洞察和象征感知\n劣势功能：外倾思维（Te）— 对长期规划和组织系统不太感兴趣',
+    strengths: ['艺术创造力', '同理心', '灵活开放', '真实自然', '活在当下'],
+    careers: '艺术家、设计师、音乐家、摄影师、厨师、护士',
+    compatible: ['ESTJ', 'ESFJ', 'ISFP', 'ISTJ'],
+    growth: '你倾向于回避冲突，但有时候说出自己的想法才是对关系最好的尊重。',
+  },
+  ESTP: {
+    archetype: '企业家·行动者',
+    tagline: 'THE ENTREPRENEUR · BOLD PRAGMATIST',
+    desc: '你是行动的化身，在现实世界中以惊人的实用主义和魅力快速推进。荣格理论中，你的主导功能是外倾感觉（Se），让你对当下的机遇保持极度敏锐；内倾思维（Ti）则帮你快速分析情境，做出精准的即时判断。',
+    cognitive: '主导功能：外倾感觉（Se）— 极度敏锐地感知当下机遇和环境\n辅助功能：内倾思维（Ti）— 快速的逻辑分析与即时判断\n第三功能：外倾情感（Fe）— 社交魅力和人际影响力\n劣势功能：内倾直觉（Ni）— 对长远后果有时考虑不足',
+    strengths: ['行动力', '社交魅力', '危机处理', '谈判技巧', '务实直接'],
+    careers: '销售、企业家、警察、运动员、演员、急救医疗',
+    compatible: ['ISFJ', 'ISTJ', 'ESTP', 'ESFP'],
+    growth: '慢下来思考长远后果，冲劲是你的礼物，但方向同样重要。',
+  },
+  ESFP: {
+    archetype: '表演者·娱乐家',
+    tagline: 'THE ENTERTAINER · SPONTANEOUS PERFORMER',
+    desc: '你是生命中的阳光，以无穷的活力和温暖感染每一个人。荣格理论中，你的主导功能是外倾感觉（Se），让你充分拥抱当下的每一刻；内倾情感（Fi）赋予你真诚的关怀和对美好事物的深切欣赏。',
+    cognitive: '主导功能：外倾感觉（Se）— 沉浸于当下体验，热爱感官世界\n辅助功能：内倾情感（Fi）— 真诚的情感和个人价值观\n第三功能：外倾思维（Te）— 在需要时展现实用的执行力\n劣势功能：内倾直觉（Ni）— 对抽象理论和长远规划不太感兴趣',
+    strengths: ['感染力与魅力', '热情活力', '灵活应变', '关怀他人', '审美品味'],
+    careers: '演员、音乐家、活动策划、销售、旅游、儿童教育',
+    compatible: ['ISFJ', 'ISTJ', 'ESTP', 'ESFP'],
+    growth: '在享受当下的同时，为未来做一点点规划。你的热情若有了方向，将会创造惊人的成就。',
+  },
+};
+
+// ============================================================
+// APP STATE
+// ============================================================
+let questions = [];
+let answers = {};
+let currentIndex = 0;
+
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startTest() {
+  // Shuffle questions and randomize A/B order per question
+  questions = shuffleArray(RAW_QUESTIONS).map(q => {
+    const flip = Math.random() < 0.5;
+    return {
+      ...q,
+      displayA: flip ? q.b : q.a,
+      displayB: flip ? q.a : q.b,
+      flipped: flip,
+    };
+  });
+  answers = {};
+  currentIndex = 0;
+
+  showScreen('quiz-screen');
+  renderQuestion(0);
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.add('hidden');
+    s.classList.remove('active');
+  });
+  const el = document.getElementById(id);
+  el.classList.remove('hidden');
+  setTimeout(() => el.classList.add('active'), 20);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderQuestion(index, direction = 'none') {
+  const card = document.getElementById('question-card');
+  const q = questions[index];
+  const total = questions.length;
+
+  // Progress
+  document.getElementById('current-q').textContent = index + 1;
+  document.getElementById('progress-fill').style.width = ((index + 1) / total * 100) + '%';
+
+  // Animate card
+  if (direction === 'forward') {
+    card.classList.add('slide-out-left');
+    setTimeout(() => {
+      card.classList.remove('slide-out-left');
+      fillCard(card, q, index);
+      card.classList.add('slide-in-right');
+      setTimeout(() => card.classList.remove('slide-in-right'), 400);
+    }, 350);
+  } else if (direction === 'back') {
+    card.classList.add('slide-out-right');
+    setTimeout(() => {
+      card.classList.remove('slide-out-right');
+      fillCard(card, q, index);
+      card.classList.add('slide-in-left');
+      setTimeout(() => card.classList.remove('slide-in-left'), 400);
+    }, 350);
+  } else {
+    fillCard(card, q, index);
+  }
+
+  updateNavButtons();
+}
+
+function fillCard(card, q, index) {
+  const labels = ['A', 'B'];
+  const options = [q.displayA, q.displayB];
+  const selected = answers[index]; // 'A' or 'B' based on display position
+
+  document.getElementById('q-number').textContent = `QUESTION ${String(index + 1).padStart(2, '0')}`;
+  document.getElementById('q-text').textContent = q.text;
+
+  const container = document.getElementById('options-container');
+  container.innerHTML = options.map((opt, i) => `
+    <button class="option-btn ${selected === labels[i] ? 'selected' : ''}"
+      onclick="selectAnswer(${index}, '${labels[i]}')">
+      <span class="option-label">${labels[i]}</span>
+      <span>${opt}</span>
+    </button>
+  `).join('');
+}
+
+function selectAnswer(index, choice) {
+  answers[index] = choice;
+
+  // Re-highlight options
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach((btn, i) => {
+    btn.classList.toggle('selected', i === (choice === 'A' ? 0 : 1));
+  });
+
+  // Auto-advance after short delay
+  if (index < questions.length - 1) {
+    setTimeout(() => navigate(1), 400);
+  }
+
+  updateNavButtons();
+}
+
+function navigate(dir) {
+  const newIndex = currentIndex + dir;
+  if (newIndex < 0 || newIndex >= questions.length) return;
+  currentIndex = newIndex;
+  renderQuestion(currentIndex, dir === 1 ? 'forward' : 'back');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateNavButtons() {
+  document.getElementById('btn-prev').disabled = currentIndex === 0;
+  document.getElementById('btn-next').style.display = currentIndex < questions.length - 1 ? 'flex' : 'none';
+
+  const allAnswered = Object.keys(answers).length === questions.length;
+  const submitBtn = document.getElementById('btn-submit');
+  if (currentIndex === questions.length - 1) {
+    submitBtn.classList.add('visible');
+    document.getElementById('btn-next').style.display = 'none';
+  } else {
+    submitBtn.classList.remove('visible');
+  }
+}
+
+function submitTest() {
+  const unanswered = questions.length - Object.keys(answers).length;
+  if (unanswered > 0) {
+    alert(`还有 ${unanswered} 道题目尚未作答，请完成所有题目后再提交。`);
+    return;
+  }
+
+  // Tally scores
+  const scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+
+  questions.forEach((q, i) => {
+    const displayChoice = answers[i]; // 'A' or 'B' in display order
+    // Determine if this maps to original A or B
+    let origChoice;
+    if (displayChoice === 'A') {
+      origChoice = q.flipped ? 'B' : 'A';
+    } else {
+      origChoice = q.flipped ? 'A' : 'B';
+    }
+
+    // Original A = first pole, B = second pole
+    const dim = q.dim;
+    if (dim === 'EI') { origChoice === 'A' ? scores.E++ : scores.I++; }
+    if (dim === 'SN') { origChoice === 'A' ? scores.S++ : scores.N++; }
+    if (dim === 'TF') { origChoice === 'A' ? scores.T++ : scores.F++; }
+    if (dim === 'JP') { origChoice === 'A' ? scores.J++ : scores.P++; }
+  });
+
+  const type = [
+    scores.E >= scores.I ? 'E' : 'I',
+    scores.S >= scores.N ? 'S' : 'N',
+    scores.T >= scores.F ? 'T' : 'F',
+    scores.J >= scores.P ? 'J' : 'P',
+  ].join('');
+
+  showResult(type, scores);
+}
+
+function showResult(type, scores) {
+  const r = RESULTS[type];
+
+  document.getElementById('result-type').textContent = type;
+  document.getElementById('result-archetype').textContent = r.archetype;
+  document.getElementById('result-tagline').textContent = r.tagline;
+
+  // Dimension bars
+  const dims = [
+    { left: 'E', right: 'I', lScore: scores.E, rScore: scores.I },
+    { left: 'S', right: 'N', lScore: scores.S, rScore: scores.N },
+    { left: 'T', right: 'F', lScore: scores.T, rScore: scores.F },
+    { left: 'J', right: 'P', lScore: scores.J, rScore: scores.P },
+  ];
+
+  document.getElementById('dims-content').innerHTML = dims.map(d => {
+    const total = d.lScore + d.rScore;
+    const pct = Math.round(d.lScore / total * 100);
+    const dominant = pct >= 50 ? d.left : d.right;
+    const pctDisplay = pct >= 50 ? pct : 100 - pct;
+    return `
+      <div class="dim-row">
+        <div class="dim-label ${type.includes(d.left) ? '' : 'dim'}">${d.left}</div>
+        <div class="dim-bar-track">
+          <div class="dim-bar-fill" style="width:0%" data-target="${pct}%">
+            <div class="dim-pct" style="left:0%" data-target="${pct}%">${pctDisplay}%</div>
+          </div>
+        </div>
+        <div class="dim-label right ${type.includes(d.right) ? '' : 'dim'}">${d.right}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Sections
+  document.getElementById('result-sections').innerHTML = `
+    <div class="result-section">
+      <div class="section-label">OVERVIEW · 人格概述</div>
+      <div class="section-title">认识你自己</div>
+      <div class="section-body">${r.desc}</div>
+    </div>
+    <div class="result-section">
+      <div class="section-label">COGNITIVE FUNCTIONS · 荣格认知功能</div>
+      <div class="section-title">你的心理功能栈</div>
+      <div class="section-body" style="white-space:pre-line">${r.cognitive}</div>
+    </div>
+    <div class="result-section">
+      <div class="section-label">STRENGTHS · 天赋优势</div>
+      <div class="section-title">你天生擅长的事</div>
+      <div class="traits-grid">
+        ${r.strengths.map(s => `<div class="trait-tag">${s}</div>`).join('')}
+      </div>
+    </div>
+    <div class="result-section">
+      <div class="section-label">CAREER · 职业倾向</div>
+      <div class="section-title">适合你的领域</div>
+      <div class="section-body">${r.careers}</div>
+    </div>
+    <div class="result-section">
+      <div class="section-label">COMPATIBILITY · 人际契合</div>
+      <div class="section-title">与你最相契的类型</div>
+      <div class="compatible-types">
+        ${r.compatible.map(t => `<div class="type-pill">${t}</div>`).join('')}
+      </div>
+    </div>
+    <div class="result-section">
+      <div class="section-label">GROWTH · 成长方向</div>
+      <div class="section-title">你的成长边疆</div>
+      <div class="section-body">${r.growth}</div>
+    </div>
+  `;
+
+  showScreen('result-screen');
+
+  // Animate bars after screen shows
+  setTimeout(() => {
+    document.querySelectorAll('.dim-bar-fill').forEach(bar => {
+      bar.style.width = bar.dataset.target;
+      const pct = document.querySelector('.dim-pct', bar);
+      if (pct) pct.style.left = bar.dataset.target;
+    });
+    document.querySelectorAll('.dim-pct').forEach(el => {
+      el.style.left = el.dataset.target;
+    });
+  }, 300);
+}
+
+function restartTest() {
+  showScreen('intro-screen');
+}
+
+// INIT
+window.addEventListener('load', () => {
+  const loading = document.getElementById('loading');
+  setTimeout(() => {
+    loading.classList.add('fade-out');
+    setTimeout(() => {
+      loading.style.display = 'none';
+      showScreen('intro-screen');
+    }, 800);
+  }, 1200);
+});
+</script>
+</body>
+</html>
